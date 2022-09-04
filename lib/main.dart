@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/auth.dart';
+import '../provider/ElderlyProfile.dart';
+
 import '../page/authPage.dart';
 import '../page/mainPage.dart';
 import '../page/splashPage.dart';
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context)=> Auth(),),
+        ChangeNotifierProvider(create: (context) => Profile(),),
       ],
 
       child: Consumer<Auth>(

@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
 
   Future<void> _authentication(
       String email, String password, String urlSegment) async {
-    final url = Uri.parse('http://192.168.68.106:80/api/v1/$urlSegment');
+    final url = Uri.parse('http://192.168.68.102:80/api/auth/$urlSegment');
 
     try {
       final response = await http.post(url,
@@ -56,7 +56,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://192.168.68.106:80/api/v1/logout');
+    final url = Uri.parse('http://192.168.68.106:80/api/auth/logout');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? id = localStorage.getString('user');
     String? token = localStorage.getString('token');

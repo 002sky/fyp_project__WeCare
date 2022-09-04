@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_project_testing/modal/profile.dart';
+// import 'package:fyp_project_testing/modal/profile.dart';
 
 
 class ProfileCard extends StatelessWidget {
