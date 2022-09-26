@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:fyp_project_testing/dummy_data/dummy_profile.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
 import 'package:fyp_project_testing/page/ProfileCard.dart';
+import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
 import '../provider/ElderlyProfile.dart';
 
@@ -49,20 +50,18 @@ class ProfileCareList extends StatefulWidget {
 }
 
 class _ProfileCareListState extends State<ProfileCareList> {
-  late Future _profileDetail;
-  Future _obtainProfileDetail() async {
-    await Provider.of<Profile>(context, listen: false).fetcheProfileDetail();
-  }
 
   @override
   void initState() {
     // TODO: implement initState
-    _profileDetail = _obtainProfileDetail();
     super.initState();
+    final postData = Provider.of<ProfileProvider>(context, listen: false);
+    postData.getPostData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text(_profileDetail.toString());
+    final postD = Provider.of<ProfileProvider>(context);
+    return Text(postD.post?.last.DOB ?? '') ;
   }
 }

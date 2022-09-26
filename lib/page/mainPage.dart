@@ -28,7 +28,7 @@ class _MainPage extends State<MainPage> {
     ScheduleMainPage(),
     NotidificationMainPage(),
     MedicationMainPage(),
-    StatusReportPage()
+    // StatusReportPage()
   ];
 
   void _onPageChange(int index) {
@@ -50,11 +50,11 @@ class _MainPage extends State<MainPage> {
   _loadUserData() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? token = localStorage.getString('token');
-   
+
+    
 
     if (token != null) {
       setState(() {
-        
         name = token;
       });
     }

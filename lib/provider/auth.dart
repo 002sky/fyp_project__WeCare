@@ -22,7 +22,7 @@ class Auth with ChangeNotifier {
 
   Future<void> _authentication(
       String email, String password, String urlSegment) async {
-    final url = Uri.parse('http://192.168.68.102:80/api/auth/$urlSegment');
+    final url = Uri.parse('http://192.168.68.108:80/api/auth/$urlSegment');
 
     try {
       final response = await http.post(url,
