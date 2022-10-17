@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:fyp_project_testing/dummy_data/dummy_profile.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
 import 'package:fyp_project_testing/page/ProfileCard.dart';
+import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
 import '../provider/ElderlyProfile.dart';
@@ -12,33 +13,33 @@ class ProfileMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.all(10),
-        child: Column(children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Elderly Profile',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+    return Scaffold(
+      body: Container(
+          margin: EdgeInsets.all(10),
+          child: Column(children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Elderly Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
-          ),
-          // Expanded(
-          //     child: ListView.builder(
-          //   itemCount: dummy_profile.length,
-          //   itemBuilder: (context, index) {
-          //     return ProfileCard(
-          //         elderprofile[index].name,
-          //         elderprofile[index].profilePic,
-          //         elderprofile[index].gender,
-          //         elderprofile[index].desc,
-          //         elderprofile[index].color);
-          //   },
-          // )),
-          ProfileCareList(),
-        ]));
+            ProfileCareList(),
+          ])),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        
+        onPressed: () => {          Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => AddElderlyProfilePage(),
+                fullscreenDialog: true,
+              ))},
+      ),
+    );
   }
 }
 
@@ -50,7 +51,6 @@ class ProfileCareList extends StatefulWidget {
 }
 
 class _ProfileCareListState extends State<ProfileCareList> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -62,6 +62,19 @@ class _ProfileCareListState extends State<ProfileCareList> {
   @override
   Widget build(BuildContext context) {
     final postD = Provider.of<ProfileProvider>(context);
-    return Text(postD.post?.last.DOB ?? '') ;
+    return Expanded(
+        child: ListView.builder(
+      itemCount: postD.post?.length,
+      itemBuilder: (context, index) {
+        return ProfileCard(
+            postD.post![index].name,
+            postD.post![index].DOB,
+            postD.post![index].bedID,
+            postD.post![index].gender,
+            postD.post![index].desc);
+      },
+    ));
+
+    // return Text(postD.post?.last.DOB ?? '') ;
   }
 }

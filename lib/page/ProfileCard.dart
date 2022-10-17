@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
 
-
 class ProfileCard extends StatelessWidget {
-
-
   final String name;
-  final String image;
-  final IconData gender;
+  final String DOB;
+  final String bedID;
+  final String gender;
   final String desc;
-  final Color color;
 
- ProfileCard(this.name,this.image,this.gender, this.desc, this.color);
+
+  ProfileCard(this.name,this.DOB, this.bedID, this.gender, this.desc);
+
+  IconData iconType(String gender){
+    if(gender.toLowerCase() == "male"){
+      return Icons.male_outlined;
+    }else if(gender.toLowerCase() == "female"){
+      return Icons.female_outlined;
+    }else{
+      return Icons.question_mark_outlined;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-     return ListTile(
+    return ListTile(
         onTap: () => {},
         leading: ConstrainedBox(
           constraints: BoxConstraints(
@@ -24,8 +32,9 @@ class ProfileCard extends StatelessWidget {
             maxWidth: 64,
             maxHeight: 64,
           ),
-          child: Image.asset(image,
-              fit: BoxFit.scaleDown),
+          // child: Image.asset(image, fit: BoxFit.scaleDown),
+          child: Text(bedID),
+
         ),
         title: Text(name),
         trailing: ConstrainedBox(
@@ -36,7 +45,7 @@ class ProfileCard extends StatelessWidget {
             maxHeight: 64,
           ),
           child: Icon(
-            gender,
+            iconType(gender),
             color: Colors.blue,
           ),
         ),
