@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 // import 'package:fyp_project_testing/dummy_data/dummy_profile.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
@@ -31,13 +34,14 @@ class ProfileMainPage extends StatelessWidget {
           ])),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        
-        onPressed: () => {          Navigator.push(
+        onPressed: () => {
+          Navigator.push(
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) => AddElderlyProfilePage(),
                 fullscreenDialog: true,
-              ))},
+              ))
+        },
       ),
     );
   }
@@ -51,27 +55,41 @@ class ProfileCareList extends StatefulWidget {
 }
 
 class _ProfileCareListState extends State<ProfileCareList> {
+  // @override
+  // void didChangeDependencies() {
+  //   Provider.of<ProfileProvider>(context, listen: false).getPostData();
+
+  //   super.didChangeDependencies();
+  // }
+
   @override
   void initState() {
-    // TODO: implement initState
+    Provider.of<ProfileProvider>(context, listen: false).getPostData();
     super.initState();
-    final postData = Provider.of<ProfileProvider>(context, listen: false);
-    postData.getPostData();
   }
+
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   postData = Provider.of<ProfileProvider>(context, listen: false);
+
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final postD = Provider.of<ProfileProvider>(context);
+    final postD = Provider.of<ProfileProvider>(context, listen: false).profile;
+
     return Expanded(
         child: ListView.builder(
-      itemCount: postD.post?.length,
+      itemCount: postD.length,
       itemBuilder: (context, index) {
         return ProfileCard(
-            postD.post![index].name,
-            postD.post![index].DOB,
-            postD.post![index].bedID,
-            postD.post![index].gender,
-            postD.post![index].desc);
+            postD[index].name,
+            postD[index].DOB,
+            postD[index].bedID,
+            postD[index].gender,
+            postD[index].desc,
+            postD[index].id);
       },
     ));
 

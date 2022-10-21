@@ -32,7 +32,9 @@ dependencies:
     sdk: flutter
   flutter_form_builder: ^7.6.0
   form_builder_extra_fields: ^8.3.0
+  form_builder_validators: ^8.3.0
   http: ^0.13.5
+  network_info_plus: ^3.0.1
   provider: ^6.0.3
   shared_preferences: ^2.0.15
   syncfusion_flutter_calendar: ^20.2.45

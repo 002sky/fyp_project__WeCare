@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:fyp_project_testing/config/databaseConfig.dart';
+
 import 'dart:core';
 import '../modal/profileDetail.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +13,7 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
   ProfileDetail? result;
   try {
     final response = await http.get(
-      Uri.parse('http://192.168.68.108:80/api/admin/viewProfile'),
+      Uri.parse( databaseURL().toString() +'api/admin/viewProfile'),
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/page/profileDetailView.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -7,16 +8,16 @@ class ProfileCard extends StatelessWidget {
   final String bedID;
   final String gender;
   final String desc;
+  final String id;
 
+  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc,this.id);
 
-  ProfileCard(this.name,this.DOB, this.bedID, this.gender, this.desc);
-
-  IconData iconType(String gender){
-    if(gender.toLowerCase() == "male"){
+  IconData iconType(String gender) {
+    if (gender.toLowerCase() == "male") {
       return Icons.male_outlined;
-    }else if(gender.toLowerCase() == "female"){
+    } else if (gender.toLowerCase() == "female") {
       return Icons.female_outlined;
-    }else{
+    } else {
       return Icons.question_mark_outlined;
     }
   }
@@ -24,7 +25,19 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: () => {},
+        onTap: () => {
+          Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => ProfileDetailView(id),
+                fullscreenDialog: true,
+                
+              ),
+
+
+              )
+              
+        },
         leading: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: 50,
@@ -34,7 +47,6 @@ class ProfileCard extends StatelessWidget {
           ),
           // child: Image.asset(image, fit: BoxFit.scaleDown),
           child: Text(bedID),
-
         ),
         title: Text(name),
         trailing: ConstrainedBox(

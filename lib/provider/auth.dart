@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:fyp_project_testing/config/databaseConfig.dart';
+
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +24,7 @@ class Auth with ChangeNotifier {
 
   Future<void> _authentication(
       String email, String password, String urlSegment) async {
-    final url = Uri.parse('http://192.168.68.108:80/api/auth/$urlSegment');
+    final url = Uri.parse(databaseURL().toString() + 'api/auth/$urlSegment');
 
     try {
       final response = await http.post(url,
@@ -56,7 +58,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('http://192.168.68.106:80/api/auth/logout');
+    final url = Uri.parse(databaseURL().toString() +'api/auth/logout');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? id = localStorage.getString('user');
     String? token = localStorage.getString('token');

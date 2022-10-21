@@ -82,7 +82,7 @@ class _FullScreenDialog extends State<FullScreenDialog> {
               FormBuilderDateTimePicker(
                 name: 'StartTime',
                 onChanged: (val) {
-                  print(val);
+
                   startTime = val!;
                 },
               ),
@@ -96,7 +96,7 @@ class _FullScreenDialog extends State<FullScreenDialog> {
               FormBuilderDateTimePicker(
                 name: 'EndTime',
                 onChanged: (val) {
-                  print(val);
+
                   endTime = val!;
                 },
               ),
