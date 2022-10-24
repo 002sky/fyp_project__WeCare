@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:fyp_project_testing/modal/profileDetail.dart';
+import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
 import 'package:intl/intl.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
@@ -11,7 +15,14 @@ class AddElderlyProfilePage extends StatefulWidget {
 }
 
 class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
-  TextEditingController elderlyNameContoller = new TextEditingController();
+  final elderlyNameContoller = TextEditingController();
+  final relativeIDController = TextEditingController();
+  final bedIDController = TextEditingController();
+  final DOBContoller = TextEditingController();
+  final roomIDController = TextEditingController();
+
+  String? genderController;
+
   // TextEditingController elderlyNameContoller = new TextEditingController();
 
   @override
@@ -47,11 +58,16 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
               alignment: Alignment.centerLeft,
             ),
             FormBuilderRadioGroup(
-                decoration: InputDecoration(labelText: 'gender'),
-                name: 'Gender',
-                options: ['Male', 'Female']
-                    .map((lang) => FormBuilderFieldOption(value: lang))
-                    .toList(growable: false)),
+              decoration: InputDecoration(labelText: 'gender'),
+              name: 'Gender',
+              options: ['Male', 'Female']
+                  .map((lang) => FormBuilderFieldOption(value: lang))
+                  .toList(growable: false),
+              onChanged: (value) {
+                genderController = value.toString();
+                print(value);
+              },
+            ),
 
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.1,
@@ -64,13 +80,14 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             FormBuilderDateTimePicker(
               name: "Date of Bitrh",
               inputType: InputType.date,
-              format: DateFormat('M/d/y'),
+              format: DateFormat('y-M-d'),
               validator: (value) {
                 if (value.toString().isEmpty) {
                   return "roll";
                 }
               },
               onChanged: (value) => {},
+              controller: DOBContoller,
             ),
 
             SizedBox(
@@ -80,6 +97,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             FormBuilderTextField(
               name: "Room ID",
               decoration: InputDecoration(labelText: 'Room ID'),
+              controller: roomIDController,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.1,
@@ -87,13 +105,14 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             FormBuilderTextField(
               name: "Bed ID",
               decoration: InputDecoration(labelText: 'Bed ID'),
-              autovalidateMode: AutovalidateMode.always,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: FormBuilderValidators.compose(
                 [
                   FormBuilderValidators.required(
                       errorText: 'please enter the Bed No')
                 ],
               ),
+              controller: bedIDController,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.1,
@@ -101,12 +120,23 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             FormBuilderTextField(
               name: "Relative ID",
               decoration: InputDecoration(labelText: 'Relative ID'),
+              controller: relativeIDController,
             ),
 
             OutlinedButton(
               child: Text('Submit'),
               onPressed: () {
-                print('where is errror');
+                String profileData = jsonEncode({
+                  'name': elderlyNameContoller.text,
+                  'DOB': DOBContoller.text,
+                  'gender': genderController,
+                  'roomID': roomIDController.text,
+                  'bedNo': bedIDController.text,
+                  'erID': relativeIDController.text,
+                });
+
+                addElderlyProfile(profileData);
+
               },
             ),
 

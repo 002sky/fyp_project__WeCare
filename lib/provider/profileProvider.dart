@@ -34,11 +34,13 @@ class ProfileProvider extends ChangeNotifier {
 
     loading = true;
     loadedProfileByID = (await fetchProfileDetailByID(id));
-    
+
     loading = false;
 
     _ProfileByID = loadedProfileByID;
 
     notifyListeners();
   }
+
+
 }

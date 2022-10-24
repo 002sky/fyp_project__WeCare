@@ -13,7 +13,7 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
   ProfileDetail? result;
   try {
     final response = await http.get(
-      Uri.parse( databaseURL().toString() +'api/admin/viewProfile'),
+      Uri.parse(databaseURL().toString() + 'api/admin/viewProfile'),
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },
@@ -36,23 +36,23 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
   return resultList;
 }
 
-Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async{
+Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {
   List<ProfileDetail>? resultProfile = [];
   ProfileDetail? result;
- try {
+  try {
     final response = await http.get(
-      Uri.parse( databaseURL().toString() +'api/admin/viewProfileByID/'+id),
+      Uri.parse(databaseURL().toString() + 'api/admin/viewProfileByID/' + id),
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       },
     );
     if (response.statusCode == 200) {
       final item = json.decode(response.body);
-        for (var i in item) {
-          result = ProfileDetail.fromJson(i);
-          resultProfile.add(result);
-        }
-      
+      for (var i in item) {
+        result = ProfileDetail.fromJson(i);
+        resultProfile.add(result);
+      }
+
       // result = ProfileDetail.fromJson(item[0][0]);
     } else {
       print('error');
@@ -61,10 +61,27 @@ Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async{
     log(e.toString());
   }
 
-
   return resultProfile;
 }
 
+Future<void> addElderlyProfile(String data) async {
+  final url = Uri.parse(databaseURL().toString() + 'api/admin/createProfile');
+  try {
+    final response = await http.post(url,
+      body: data,
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
+    );
+
+
+    // final responseData = json.decode(response.body);
+
+    print(response.body);
+  } catch (e) {
+    print(e);
+  }
+}
 
 
 // class Profile with ChangeNotifier {
