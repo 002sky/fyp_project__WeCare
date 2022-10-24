@@ -31,7 +31,6 @@ class ProfileCard extends StatelessWidget {
               MaterialPageRoute<void>(
                 builder: (BuildContext context) => ProfileDetailView(id),
                 fullscreenDialog: true,
-                
               ),
 
 

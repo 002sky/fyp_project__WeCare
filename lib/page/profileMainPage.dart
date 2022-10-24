@@ -55,18 +55,35 @@ class ProfileCareList extends StatefulWidget {
 }
 
 class _ProfileCareListState extends State<ProfileCareList> {
-  // @override
-  // void didChangeDependencies() {
-  //   Provider.of<ProfileProvider>(context, listen: false).getPostData();
-
-  //   super.didChangeDependencies();
-  // }
+  var _isInit = true;
+  var _isLoading = false;
 
   @override
-  void initState() {
-    Provider.of<ProfileProvider>(context, listen: false).getPostData();
-    super.initState();
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<ProfileProvider>(
+        context,
+        listen: false,
+      ).getPostData().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+    ;
   }
+
+  // @override
+  // void initState() {
+  //   Provider.of<ProfileProvider>(context,listen: false).getPostData();
+  //   super.initState();
+  // }
 
   // void initState() {
   //   // TODO: implement initState

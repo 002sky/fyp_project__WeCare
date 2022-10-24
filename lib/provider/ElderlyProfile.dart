@@ -26,7 +26,6 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
           resultList.add(result);
         }
       }
-
       // result = ProfileDetail.fromJson(item[0][0]);
     } else {
       print('error');
@@ -35,6 +34,35 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
     log(e.toString());
   }
   return resultList;
+}
+
+Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async{
+  List<ProfileDetail>? resultProfile = [];
+  ProfileDetail? result;
+ try {
+    final response = await http.get(
+      Uri.parse( databaseURL().toString() +'api/admin/viewProfileByID/'+id),
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
+    );
+    if (response.statusCode == 200) {
+      final item = json.decode(response.body);
+        for (var i in item) {
+          result = ProfileDetail.fromJson(i);
+          resultProfile.add(result);
+        }
+      
+      // result = ProfileDetail.fromJson(item[0][0]);
+    } else {
+      print('error');
+    }
+  } catch (e) {
+    log(e.toString());
+  }
+
+
+  return resultProfile;
 }
 
 
