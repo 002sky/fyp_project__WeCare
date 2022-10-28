@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:fyp_project_testing/config/databaseConfig.dart';
 
-import 'dart:core';
+import 'dart:core'; 
 import '../modal/profileDetail.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;  
 
 Future<List<ProfileDetail>> fetchProfileDetail() async {
   List<ProfileDetail>? resultList = [];
@@ -65,7 +65,7 @@ Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {
 }
 
 Future<void> addElderlyProfile(String data) async {
-  final url = Uri.parse(databaseURL().toString() + 'api/admin/createProfile');
+  final url = Uri.parse( databaseURL().toString() + 'api/admin/createProfile');
   try {
     final response = await http.post(url,
       body: data,
@@ -73,10 +73,7 @@ Future<void> addElderlyProfile(String data) async {
         HttpHeaders.contentTypeHeader: "application/json",
       },
     );
-
-
     // final responseData = json.decode(response.body);
-
     print(response.body);
   } catch (e) {
     print(e);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 
 import '../provider/ElderlyProfile.dart';
@@ -7,7 +9,7 @@ class ProfileProvider extends ChangeNotifier {
   List<ProfileDetail>? _Profile = [];
   List<ProfileDetail>? _ProfileByID = [];
   // ProfileDetail? post;
-  bool loading = false;
+  bool _isloading = false;
 
   List<ProfileDetail> get profile {
     return [...?_Profile];
@@ -20,27 +22,32 @@ class ProfileProvider extends ChangeNotifier {
   getPostData() async {
     List<ProfileDetail>? loadedProfile = [];
 
-    loading = true;
+    _isloading = true;
     loadedProfile = (await fetchProfileDetail());
-    loading = false;
+    _isloading = false;
 
     _Profile = loadedProfile;
 
     notifyListeners();
   }
 
-  getProfileByID(String id) async {
+  Future<void> getProfileByID(String id) async {
     List<ProfileDetail>? loadedProfileByID = [];
 
-    loading = true;
-    loadedProfileByID = (await fetchProfileDetailByID(id));
+    _isloading = true;
 
-    loading = false;
+    if (profile.isNotEmpty) {
+      var Findid = profile.where((element) => element.id == id);
+
+      if (Findid.isNotEmpty) {
+        loadedProfileByID = Findid.toList();
+      }
+    }
+    _isloading = false;
 
     _ProfileByID = loadedProfileByID;
 
-    notifyListeners();
   }
 
-
+  addProfile(String data) {}
 }

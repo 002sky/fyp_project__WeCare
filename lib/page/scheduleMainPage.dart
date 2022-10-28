@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/modal/schedule.dart';
+import 'package:fyp_project_testing/page/addSchudulePage.dart';
+import 'package:fyp_project_testing/provider/auth.dart';
+import 'package:fyp_project_testing/provider/scheduleProvider.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
-
-final List<Meeting> meetings = <Meeting>[];
 
 class ScheduleMainPage extends StatefulWidget {
   @override
@@ -11,12 +12,37 @@ class ScheduleMainPage extends StatefulWidget {
 }
 
 class _ScheduleMainPageState extends State<ScheduleMainPage> {
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      String? id = Provider.of<Auth>(context, listen: false).userID;
+
+      Provider.of<ScheduleProvider>(
+        context,
+        listen: false,
+      ).getScheduleData(id!).then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SfCalendar(
         view: CalendarView.month,
-        dataSource: MeetingDataSource(meetings),
+        dataSource: scheduleDataSource(_getScheduleData()),
         monthViewSettings: MonthViewSettings(
             appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       ),
@@ -26,151 +52,59 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
           Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) => FullScreenDialog(),
+                builder: (BuildContext context) => AddSchdeulePage(),
                 fullscreenDialog: true,
               ));
         }),
       ),
     );
   }
-}
 
-class FullScreenDialog extends StatefulWidget {
-  @override
-  State<FullScreenDialog> createState() => _FullScreenDialog();
-}
-
-class _FullScreenDialog extends State<FullScreenDialog> {
-  TextEditingController tileController = new TextEditingController();
-  late DateTime startTime;
-  late DateTime endTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff5ac18e),
-        title: Text('Add Schedule'),
-      ),
-      body: Container(
-        margin: EdgeInsets.all(10),
-        child: FormBuilder(
-          child: Column(
-            children: [
-              Align(
-                child: Text('Add Schedule'),
-                alignment: Alignment.center,
-              ),
-              SizedBox(height: 10),
-              Align(
-                child: Text('Schedule Title',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
-              FormBuilderTextField(
-                name: 'ScheduleTitle',
-                controller: tileController,
-              ),
-              SizedBox(height: 10),
-              Align(
-                child: Text('Start Time',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
-              FormBuilderDateTimePicker(
-                name: 'StartTime',
-                onChanged: (val) {
-
-                  startTime = val!;
-                },
-              ),
-              SizedBox(height: 10),
-              Align(
-                child: Text('End Time',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
-              FormBuilderDateTimePicker(
-                name: 'EndTime',
-                onChanged: (val) {
-
-                  endTime = val!;
-                },
-              ),
-              SizedBox(height: 10),
-              Align(
-                child: Text('Color',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
-              FormBuilderColorPickerField(
-                name: 'Color',
-                colorPickerType: ColorPickerType.materialPicker,
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                      onPressed: (() => _AddDataSource(
-                          startTime, endTime, tileController.text)),
-                      child: Text('button')),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+  List<Schedule> _getScheduleData() {
+    final List<Schedule> sc =
+        Provider.of<ScheduleProvider>(context, listen: false).schedule;
+    return sc;
   }
 }
 
-List<Meeting> _AddDataSource(
-    DateTime startTime, DateTime endTime, String title) {
-  meetings
-      .add(Meeting(title, startTime, endTime, const Color(0xFF0F8644), false));
-  print(meetings.length);
-  return meetings;
-}
+class scheduleDataSource extends CalendarDataSource {
 
-class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Meeting> source) {
+  scheduleDataSource(List<Schedule> source) {
     appointments = source;
   }
 
   @override
   DateTime getStartTime(int index) {
-    return appointments![index].from;
+    return _getScheduleData(index).start_time;
   }
 
   @override
   DateTime getEndTime(int index) {
-    return appointments![index].to;
+    return _getScheduleData(index).end_time;
   }
 
   @override
   String getSubject(int index) {
-    return appointments![index].eventName;
+    return _getScheduleData(index).eventName;
   }
 
-  @override
-  Color getColor(int index) {
-    return appointments![index].background;
-  }
+  // @override
+  // Color getColor(int index) {
+  //   return _getScheduleData(index).color_display;
+  // }
 
-  @override
-  bool isAllDay(int index) {
-    return appointments![index].isAllDay;
-  }
-}
+  // @override
+  // bool isAllDay(int index) {
+  //   return _getScheduleData(index).isAllDay;
+  // }
 
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
-  bool isAllDay;
+  Schedule _getScheduleData(int index) {
+    final dynamic schedule = appointments![index];
+    late final Schedule scheduleData;
+    if (schedule is Schedule) {
+      scheduleData = schedule;
+    }
+
+    return scheduleData;
+  }
 }

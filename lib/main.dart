@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/provider/scheduleProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/auth.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context)=> Auth(),),
         ChangeNotifierProvider(create: (context) => ProfileProvider(),),
+        ChangeNotifierProvider(create: ((context) => ScheduleProvider()),),
       ],
 
       child: Consumer<Auth>(
