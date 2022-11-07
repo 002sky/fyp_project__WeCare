@@ -9,6 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Auth with ChangeNotifier {
   var _token = "";
   String _userId = "";
+  bool _isAdmin = false;
+
+  bool get isAdmin {
+    return _isAdmin;
+  }
 
   bool get isAuth {
     return token != null;
@@ -20,6 +25,7 @@ class Auth with ChangeNotifier {
     }
     return null;
   }
+
   String? get userID {
     return _userId;
   }
@@ -39,10 +45,15 @@ class Auth with ChangeNotifier {
       final responseData = json.decode(response.body);
       Map<String, dynamic> token = responseData['token'];
       Map<String, dynamic> id = responseData['user'];
-      var idTesting = id.values.toList();
-      var testing = token.values.toList();
-      _token = testing[0].toString();
-      _userId = idTesting[0].toString();
+      var user = id.values.toList();
+      var userToken = token.values.toList();
+      _token = userToken[0].toString();
+      _userId = user[0].toString();
+
+      if (user[5].toString() == 'is_admin') {
+        _isAdmin = true;
+      }
+
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', _token);
       localStorage.setString('user', _userId);
@@ -56,7 +67,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    return _authentication(email, password,'login');
+    return _authentication(email, password, 'login');
   }
 
   Future<void> logout() async {

@@ -85,7 +85,7 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
                 children: [
                   OutlinedButton(
                       onPressed: () {
-                        Map<String, dynamic> map = {};
+              
                         String data = json.encode({
                           'eventName': tileController.text,
                           'start_time': startTime.toString(),

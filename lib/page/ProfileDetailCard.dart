@@ -45,7 +45,17 @@ class _ProfileDetailCard extends State<ProfileDetailCard> {
         Provider.of<ProfileProvider>(context, listen: false).profileByID;
   
     return Container(
-      child: Text(loadedProfile.first.name),
+      child: Column(
+        children: [
+          Text(loadedProfile.first.name),
+          Text(loadedProfile.first.DOB),
+
+          Text(loadedProfile.first.desc),
+          Text(loadedProfile.first.gender),
+
+
+          
+      ]),
     );
   }
 }

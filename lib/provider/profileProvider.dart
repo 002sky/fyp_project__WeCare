@@ -33,9 +33,7 @@ class ProfileProvider extends ChangeNotifier {
 
   Future<void> getProfileByID(String id) async {
     List<ProfileDetail>? loadedProfileByID = [];
-
     _isloading = true;
-
     if (profile.isNotEmpty) {
       var Findid = profile.where((element) => element.id == id);
 
@@ -44,7 +42,6 @@ class ProfileProvider extends ChangeNotifier {
       }
     }
     _isloading = false;
-
     _ProfileByID = loadedProfileByID;
 
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fyp_project_testing/page/profileDetailView.dart';
 // import 'package:fyp_project_testing/modal/profile.dart';
 
@@ -9,8 +10,7 @@ class ProfileCard extends StatelessWidget {
   final String gender;
   final String desc;
   final String id;
-
-  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc,this.id);
+  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc, this.id);
 
   IconData iconType(String gender) {
     if (gender.toLowerCase() == "male") {
@@ -26,17 +26,14 @@ class ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
         onTap: () => {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) => ProfileDetailView(id),
-                fullscreenDialog: true,
-              ),
-
-
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => ProfileDetailView(id),
+                  fullscreenDialog: true,
+                ),
               )
-              
-        },
+            },
         leading: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: 50,
@@ -69,6 +66,7 @@ class ProfileCard extends StatelessWidget {
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [Text(desc)],
               ),
               Row(
@@ -85,5 +83,7 @@ class ProfileCard extends StatelessWidget {
             ],
           ),
         ));
+
+    
   }
 }

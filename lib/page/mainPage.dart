@@ -28,7 +28,7 @@ class _MainPage extends State<MainPage> {
     ScheduleMainPage(),
     NotidificationMainPage(),
     MedicationMainPage(),
-    // StatusReportPage()
+    StatusReportPage()
   ];
 
   void _onPageChange(int index) {
@@ -51,7 +51,7 @@ class _MainPage extends State<MainPage> {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? token = localStorage.getString('token');
 
-    
+
 
     if (token != null) {
       setState(() {
@@ -65,8 +65,8 @@ class _MainPage extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xff5ac18e),
-        title: Text(name),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: Text('WeCare'),
       ),
       drawer: AppDrawer(),
       body: PageView(
@@ -75,15 +75,18 @@ class _MainPage extends State<MainPage> {
         onPageChanged: _onPageChange,
         physics: NeverScrollableScrollPhysics(),
       ),
+
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xff5ac18e),
+        backgroundColor: Theme.of(context).primaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(0.7),
         selectedFontSize: 14,
         unselectedFontSize: 12,
         currentIndex: _index,
         onTap: _onItemTapped,
+        
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Elderly'),
           BottomNavigationBarItem(

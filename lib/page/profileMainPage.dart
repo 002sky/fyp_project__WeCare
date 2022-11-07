@@ -13,7 +13,6 @@ import '../provider/ElderlyProfile.dart';
 class ProfileMainPage extends StatelessWidget {
   static const routeName = "/profileMainPage";
   // List<Profile> elderprofile = dummy_profile.toList();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,21 +94,25 @@ class _ProfileCareListState extends State<ProfileCareList> {
   @override
   Widget build(BuildContext context) {
     final postD = Provider.of<ProfileProvider>(context, listen: false).profile;
-
-    return Expanded(
-        child: ListView.builder(
-      itemCount: postD.length,
-      itemBuilder: (context, index) {
-        return ProfileCard(
-            postD[index].name,
-            postD[index].DOB,
-            postD[index].bedID,
-            postD[index].gender,
-            postD[index].desc,
-            postD[index].id);
-      },
-    ));
-
+    if (postD.isEmpty) {
+      return Container(
+        child: Text('nothing Yet'),
+      );
+    } else {
+      return Expanded(
+          child: ListView.builder(
+        itemCount: postD.length,
+        itemBuilder: (context, index) {
+          return ProfileCard(
+              postD[index].name,
+              postD[index].DOB,
+              postD[index].bedID,
+              postD[index].gender,
+              postD[index].desc,
+              postD[index].id);
+        },
+      ));
+    }
     // return Text(postD.post?.last.DOB ?? '') ;
   }
 }
