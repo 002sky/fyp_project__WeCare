@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-
 import '../provider/ElderlyProfile.dart';
 import '../modal/profileDetail.dart';
 

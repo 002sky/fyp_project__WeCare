@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
           title: 'WeCare Management',
           theme: ThemeData(
             primaryColor:  Color(0xff5ac18e),
+            toggleableActiveColor: Colors.orange,
             fontFamily: 'Lato',
             textTheme: ThemeData.light().textTheme.copyWith(
               bodyText1: TextStyle(

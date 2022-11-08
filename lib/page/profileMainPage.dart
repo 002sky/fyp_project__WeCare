@@ -1,9 +1,5 @@
-import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-// import 'package:fyp_project_testing/dummy_data/dummy_profile.dart';
-// import 'package:fyp_project_testing/modal/profile.dart';
+
 import 'package:fyp_project_testing/page/ProfileCard.dart';
 import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
