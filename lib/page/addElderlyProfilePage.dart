@@ -61,12 +61,13 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   ),
                   onPressed: () async {
+                    //conver the Xfile Image to the Base64 image 
                     final bytes =
                         await File(_imageFile!.first.path).readAsBytes();
 
                     String img64 = base64Encode(bytes);
-                    print(img64);
 
+                    //check the validation of the form, if form not error encode to json send to networkUtil 
                     if (_formKey.currentState!.validate()) {
                       String profileData = jsonEncode({
                         'name': nameContoller.text,
@@ -93,6 +94,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
         ));
   }
 
+  //Image upload widget
   Widget imageProfile() {
     return Center(
         child: Stack(
@@ -121,6 +123,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     ));
   }
 
+  //popup box for camera 
   Widget bottomSheet() {
     return Container(
       height: 100.0,
