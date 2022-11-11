@@ -36,14 +36,14 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
   return resultList;
 }
 
-Map<String, dynamic> parseJson(String response) {    
+Map<String, dynamic> parseJson(String response) {
   return walkJson(json.decode(response));
 }
 
 Map<String, dynamic> walkJson(data) {
   data.forEach((key, value) {
     if (value is List == false) {
-      data[key] = base64Decode(value);  
+      data[key] = base64Decode(value);
     } else {
       value.forEach((item) => item = walkJson(item));
     }
@@ -80,8 +80,9 @@ Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {
   return resultProfile;
 }
 
-Future<void> addElderlyProfile(String data) async {
+Future<Map<String, dynamic>?> addElderlyProfile(String data) async {
   final url = Uri.parse(databaseURL().toString() + 'api/admin/createProfile');
+  Map<String, dynamic>? responseMessage = {'success' : false ,'message':'Something went wrong'};
   try {
     final response = await http.post(
       url,
@@ -91,10 +92,11 @@ Future<void> addElderlyProfile(String data) async {
       },
     );
     // final responseData = json.decode(response.body);
-    print(response.body);
+    responseMessage = jsonDecode(response.body);
   } catch (e) {
     print(e);
   }
+  return responseMessage;
 }
 
 

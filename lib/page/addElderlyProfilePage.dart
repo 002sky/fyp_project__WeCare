@@ -61,13 +61,17 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   ),
                   onPressed: () async {
-                    //conver the Xfile Image to the Base64 image 
-                    final bytes =
-                        await File(_imageFile!.first.path).readAsBytes();
+                    //conver the Xfile Image to the Base64 String
+                    String img64;
+                    if (_imageFile == null) {
+                      img64 = '';
+                    } else {
+                      final bytes =
+                          await File(_imageFile!.first.path).readAsBytes();
+                      img64 = base64Encode(bytes);
+                    }
 
-                    String img64 = base64Encode(bytes);
-
-                    //check the validation of the form, if form not error encode to json send to networkUtil 
+                    //check the validation of the form, if form not error encode to json send to networkUtil
                     if (_formKey.currentState!.validate()) {
                       String profileData = jsonEncode({
                         'name': nameContoller.text,
@@ -75,11 +79,15 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                         'gender': genderSelected.toLowerCase().toString(),
                         'roomID': roomNoContoller.text,
                         'bedNo': bedNoContoller.text,
-                        'elderlyImage': img64,
+                        'elderlyImage': img64.isEmpty ? null : img64,
                         'descrition': descContoller.text,
                         'erID': relativeContoller.text,
                       });
-                      addElderlyProfile(profileData);
+                       Map<String,dynamic>? msg =  await addElderlyProfile(profileData);
+
+                       if(msg!.isNotEmpty){
+                          _showErrorDialog(msg['message'], msg['success'] != true ? 'Error': 'Message');
+                       }
                     }
                   },
                   child: Text(
@@ -92,6 +100,33 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             ],
           ),
         ));
+  }
+
+  
+  Future<void> _showErrorDialog(String msg, String title) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Confirm'))
+          ],
+        );
+      },
+    );
   }
 
   //Image upload widget
@@ -123,7 +158,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     ));
   }
 
-  //popup box for camera 
+  //popup box for camera
   Widget bottomSheet() {
     return Container(
       height: 100.0,
@@ -165,7 +200,8 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
   }
 
   void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source, imageQuality: 25);
+    final pickedFile =
+        await _picker.pickImage(source: source, imageQuality: 15);
 
     List<XFile> fileList = [];
     if (pickedFile == null) {
