@@ -30,9 +30,9 @@ class Auth with ChangeNotifier {
     return _userId;
   }
 
-  Future<void> _authentication(
-      String email, String password, String urlSegment) async {
-    final url = Uri.parse(databaseURL().toString() + 'api/auth/$urlSegment');
+  Future<String?> authentication(String email, String password) async {
+        
+    final url = Uri.parse(databaseURL().toString() + 'api/auth/login');
 
     try {
       final response = await http.post(url,
@@ -40,8 +40,13 @@ class Auth with ChangeNotifier {
             'email': email,
             'password': password,
           }),
-          headers: _setHeader());
+          headers: _setHeader()
+      );
 
+      if (response.statusCode == 401) {
+
+        return response.body;
+      }
       final responseData = json.decode(response.body);
       Map<String, dynamic> token = responseData['token'];
       Map<String, dynamic> id = responseData['user'];
@@ -59,16 +64,16 @@ class Auth with ChangeNotifier {
       localStorage.setString('user', _userId);
 
       notifyListeners();
-      // _token = responseDate['token'];
-
     } catch (eror) {
       print(eror);
     }
+
+    return null;
   }
 
-  Future<void> login(String email, String password) async {
-    return _authentication(email, password, 'login');
-  }
+  // Future<void> login(String email, String password) async {
+  //   return _authentication(email, password, 'login');
+  // }
 
   Future<void> logout() async {
     final url = Uri.parse(databaseURL().toString() + 'api/auth/logout');

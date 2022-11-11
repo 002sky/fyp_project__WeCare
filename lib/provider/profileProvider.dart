@@ -22,8 +22,11 @@ class ProfileProvider extends ChangeNotifier {
     List<ProfileDetail>? loadedProfile = [];
 
     _isloading = true;
+
     loadedProfile = (await fetchProfileDetail());
+    
     _isloading = false;
+
 
     _Profile = loadedProfile;
 

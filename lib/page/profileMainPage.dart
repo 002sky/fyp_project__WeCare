@@ -28,6 +28,7 @@ class ProfileMainPage extends StatelessWidget {
             ProfileCareList(),
           ])),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
         onPressed: () => {
           Navigator.push(
@@ -74,21 +75,10 @@ class _ProfileCareListState extends State<ProfileCareList> {
     ;
   }
 
-  // @override
-  // void initState() {
-  //   Provider.of<ProfileProvider>(context,listen: false).getPostData();
-  //   super.initState();
-  // }
-
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   postData = Provider.of<ProfileProvider>(context, listen: false);
-
-  // }
 
   @override
   Widget build(BuildContext context) {
+    
     final postD = Provider.of<ProfileProvider>(context, listen: false).profile;
     if (postD.isEmpty) {
       return Container(
@@ -105,6 +95,7 @@ class _ProfileCareListState extends State<ProfileCareList> {
               postD[index].bedID,
               postD[index].gender,
               postD[index].desc,
+              postD[index].elderlyImage,
               postD[index].id);
         },
       ));

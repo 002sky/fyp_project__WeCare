@@ -34,16 +34,19 @@ class MyApp extends StatelessWidget {
         builder: (context, auth, _) => MaterialApp(
           title: 'WeCare Management',
           theme: ThemeData(
-            primaryColor:  Color(0xff5ac18e),
-            toggleableActiveColor: Colors.orange,
-            fontFamily: 'Lato',
-            textTheme: ThemeData.light().textTheme.copyWith(
-              bodyText1: TextStyle(
-                color: Color.fromRGBO(20, 51, 51, 1),
-                fontSize: 16,
-              )
-            )
-            ),
+              primaryColor: Color(0xff5ac18e),
+              colorScheme: ColorScheme.light(
+                primary: Color(0xff5ac18e),
+                secondary: Color(0x405ac18e),
+                
+              ),
+              toggleableActiveColor: Colors.orange,
+              fontFamily: 'Lato',
+              textTheme: ThemeData.light().textTheme.copyWith(
+                      bodyText1: TextStyle(
+                    color: Color.fromRGBO(20, 51, 51, 1),
+                    fontSize: 16,
+                  ))),
           home: auth.isAuth
               ? MainPage()
               : FutureBuilder(

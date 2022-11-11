@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:email_validator/email_validator.dart';
@@ -11,7 +12,6 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Stack(children: [
         Container(
@@ -20,10 +20,8 @@ class AuthPage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0x405ac18e),
-              Color(0x995ac18e),
-              Color(0xcc5ac18e),
-              Color(0xff5ac18e),
+              Theme.of(context).colorScheme.secondary,
+              Theme.of(context).colorScheme.primary,
             ],
           )),
         ),
@@ -85,12 +83,11 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm>
     with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  String? email;
-  String? password;
 
   var _isLoading = false;
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late AnimationController _controller;
+
   var remembermeValue;
 
   Future<void> _submit() async {
@@ -98,12 +95,19 @@ class _AuthFormState extends State<AuthForm>
     setState(() {
       _isLoading = true;
     });
-
     try {
-      await Provider.of<Auth>(context, listen: false).login(email!, password!);
+      final loginMessage = await Provider.of<Auth>(context, listen: false)
+          .authentication(_emailController.text, _passwordController.text);
+
+      if (loginMessage!.isNotEmpty) {
+        Map<String, dynamic> jsonMessage = json.decode(loginMessage);
+
+        _showErrorDialog(jsonMessage['message']);
+      }
     } catch (error) {
       print(error);
     }
+
     setState(() {
       _isLoading = false;
     });
@@ -113,71 +117,131 @@ class _AuthFormState extends State<AuthForm>
   Widget build(BuildContext context) {
     return Form(
         key: _formKey,
-        child: Column(children: [
-          TextFormField(
-            validator: (value) {
-              if (EmailValidator.validate(value!)) {
-                email = value;
-                return null;
-              }
-              return 'Plaue enter a valid email';
-            },
-            maxLines: 1,
-            decoration: InputDecoration(
-              hintText: 'Enter you email',
-              prefixIcon: const Icon(Icons.email),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              filled: true,
-              fillColor: Colors.white,
+        child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            children: <Widget>[
+              EmailTextField(),
+              const SizedBox(height: 10),
+              PasswordTextField(),
+              const SizedBox(height: 10),
+              Container(
+                  padding: EdgeInsets.symmetric(vertical: 25),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(15),
+                      elevation: 5,
+                      primary: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _submit();
+                      }
+                    },
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                          color: Color(0xff5ac18e),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
+            ]));
+  }
+
+  Future<void> _showErrorDialog(String msg) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
             ),
           ),
-          const SizedBox(height: 10),
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'please enter you password';
-              }
-              password= value;
-              return null;
-            },
-            maxLines: 1,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: 'Enter you password',
-              prefixIcon: const Icon(Icons.lock),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              filled: true,
-              fillColor: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 25),
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  elevation: 5,
-                  primary: Colors.white,
-                ),
+          actions: [
+            TextButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _submit();
-                  }
+                  Navigator.of(context).pop();
                 },
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                      color: Color(0xff5ac18e),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              )),
-        ]));
+                child: Text('Confirm'))
+          ],
+        );
+      },
+    );
+  }
+
+  Widget EmailTextField() {
+    return TextFormField(
+      validator: (value) {
+        if (EmailValidator.validate(value!)) {
+          return null;
+        } else if (value.isEmpty) {
+          return 'Pleasea enter a email address';
+        } else {
+          return 'please enter a valid email addree';
+        }
+      },
+      controller: _emailController,
+      decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).toggleableActiveColor,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(
+            Icons.email,
+            color: Theme.of(context).primaryColor,
+          ),
+          labelText: 'Email',
+          helperText: 'Enter Your Email Address'),
+    );
+  }
+
+  Widget PasswordTextField() {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Pleasea enter a  your Password';
+        } else {
+          return null;
+        }
+      },
+      controller: _passwordController,
+      obscureText: true,
+      decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).toggleableActiveColor,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(
+            Icons.password,
+            color: Theme.of(context).primaryColor,
+          ),
+          labelText: 'Password',
+          helperText: 'Enter Your Password'),
+    );
   }
 }
 

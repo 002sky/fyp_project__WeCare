@@ -1,3 +1,5 @@
+
+
 class ProfileDetail {
   final String id;
   final String name;
@@ -5,6 +7,7 @@ class ProfileDetail {
   final String gender;
   final String roomID;
   final String bedID;
+  final String elderlyImage;
   final String desc;
   final int erID;
 
@@ -15,6 +18,7 @@ class ProfileDetail {
     required this.gender,
     required this.roomID,
     required this.bedID,
+    required this.elderlyImage,
     required this.desc,
     required this.erID,
   });
@@ -27,6 +31,7 @@ class ProfileDetail {
         gender: json['gender'] ?? '',
         roomID: json['roomID'] ?? '',
         bedID: json['bedID'] ?? '',
+        elderlyImage: json['elderlyImage'],
         desc: json['desc'] ?? '',
         erID: json['erID'] ?? '');
   }

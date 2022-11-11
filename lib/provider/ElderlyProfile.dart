@@ -21,8 +21,8 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
     if (response.statusCode == 200) {
       final item = json.decode(response.body);
       for (var detail in item) {
-        for (var item in detail) {
-          result = ProfileDetail.fromJson(item);
+        for (var items in detail) {
+          result = ProfileDetail.fromJson(items);
           resultList.add(result);
         }
       }
@@ -34,6 +34,22 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
     log(e.toString());
   }
   return resultList;
+}
+
+Map<String, dynamic> parseJson(String response) {    
+  return walkJson(json.decode(response));
+}
+
+Map<String, dynamic> walkJson(data) {
+  data.forEach((key, value) {
+    if (value is List == false) {
+      data[key] = base64Decode(value);  
+    } else {
+      value.forEach((item) => item = walkJson(item));
+    }
+  });
+
+  return data;
 }
 
 Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {

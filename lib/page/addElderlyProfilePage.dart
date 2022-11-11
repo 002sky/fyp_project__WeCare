@@ -165,7 +165,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
   }
 
   void takePhoto(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
+    final pickedFile = await _picker.pickImage(source: source, imageQuality: 25);
 
     List<XFile> fileList = [];
     if (pickedFile == null) {

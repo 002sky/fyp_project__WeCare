@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fyp_project_testing/page/profileDetailView.dart';
@@ -9,8 +13,10 @@ class ProfileCard extends StatelessWidget {
   final String bedID;
   final String gender;
   final String desc;
+  final String elderlyImage;
   final String id;
-  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc, this.id);
+  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc,this.elderlyImage,
+      this.id);
 
   IconData iconType(String gender) {
     if (gender.toLowerCase() == "male") {
@@ -41,8 +47,8 @@ class ProfileCard extends StatelessWidget {
             maxWidth: 64,
             maxHeight: 64,
           ),
-          // child: Image.asset(image, fit: BoxFit.scaleDown),
-          child: Text(bedID),
+          child: elderlyImage.isEmpty ? Text('nothing') : Image.memory(base64.decode(elderlyImage)),
+          // child: Text(bedID),
         ),
         title: Text(name),
         trailing: ConstrainedBox(
@@ -83,7 +89,5 @@ class ProfileCard extends StatelessWidget {
             ],
           ),
         ));
-
-    
   }
 }
