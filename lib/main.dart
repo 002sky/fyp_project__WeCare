@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'WeCare Management',
           theme: ThemeData(
               primaryColor: Color(0xff5ac18e),

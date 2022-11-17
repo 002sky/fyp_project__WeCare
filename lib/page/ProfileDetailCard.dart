@@ -1,7 +1,9 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
-import '';
 
 class ProfileDetailCard extends StatefulWidget {
   final id;
@@ -37,25 +39,41 @@ class _ProfileDetailCard extends State<ProfileDetailCard> {
     ;
   }
 
-  
+  Uint8List avatarImage(String img) {
+    Uint8List bytes = base64.decode(img);
+    return bytes;
+  }
 
   @override
   Widget build(BuildContext context) {
     final loadedProfile =
         Provider.of<ProfileProvider>(context, listen: false).profileByID;
-  
-    return Container(
-      child: Column(
-        children: [
+    return Row(children: [
+      Container(
+        child: loadedProfile.first.elderlyImage.isEmpty
+            ? CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text(
+                  loadedProfile.first.name[0].toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                ),
+              )
+            : CircleAvatar(
+                backgroundImage:
+                    MemoryImage(avatarImage(loadedProfile.first.elderlyImage)),
+              ),
+      ),
+      Column(
+        children: <Widget>[
+            Text(loadedProfile.first.bedID),
           Text(loadedProfile.first.name),
           Text(loadedProfile.first.DOB),
-
           Text(loadedProfile.first.desc),
           Text(loadedProfile.first.gender),
-
-
+        
           
-      ]),
-    );
+        ],
+      ),
+    ]);
   }
 }

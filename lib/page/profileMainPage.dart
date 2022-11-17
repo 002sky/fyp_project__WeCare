@@ -25,6 +25,7 @@ class ProfileMainPage extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 4),
             ProfileCareList(),
           ])),
       floatingActionButton: FloatingActionButton(
@@ -75,10 +76,8 @@ class _ProfileCareListState extends State<ProfileCareList> {
     ;
   }
 
-
   @override
   Widget build(BuildContext context) {
-    
     final postD = Provider.of<ProfileProvider>(context, listen: false).profile;
     if (postD.isEmpty) {
       return Container(
@@ -89,14 +88,17 @@ class _ProfileCareListState extends State<ProfileCareList> {
           child: ListView.builder(
         itemCount: postD.length,
         itemBuilder: (context, index) {
-          return ProfileCard(
-              postD[index].name,
-              postD[index].DOB,
-              postD[index].bedID,
-              postD[index].gender,
-              postD[index].desc,
-              postD[index].elderlyImage,
-              postD[index].id);
+          return Padding(
+            padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+            child: ProfileCard(
+                postD[index].name,
+                postD[index].DOB,
+                postD[index].bedID,
+                postD[index].gender,
+                postD[index].desc,
+                postD[index].elderlyImage,
+                postD[index].id),
+          );
         },
       ));
     }

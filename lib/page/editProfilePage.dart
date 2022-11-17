@@ -1,19 +1,26 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class AddElderlyProfilePage extends StatefulWidget {
-  const AddElderlyProfilePage( {super.key});
+import '../provider/profileProvider.dart';
+
+class EditElderlyProfilePage extends StatefulWidget {
+  const EditElderlyProfilePage(this.id, {super.key});
+
+  final id;
 
   @override
-  State<AddElderlyProfilePage> createState() => _AddElderlyProfilePageState();
+  State<EditElderlyProfilePage> createState() => _EditElderlyProfilePageState();
 }
 
-class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
+class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
   final DOBcontroller = TextEditingController();
   final bedNoContoller = TextEditingController();
   final roomNoContoller = TextEditingController();
@@ -22,14 +29,45 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
   final relativeContoller = TextEditingController();
   String genderSelected = 'Male';
 
+  var _isInit = true;
+  var _isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
 
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<ProfileProvider>(
+        context,
+        listen: false,
+      ).getProfileByID(widget.id).then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+    ;
+  }
+
+  Uint8List avatarImage(String img) {
+    Uint8List bytes = base64.decode(img);
+    return bytes;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final loadedProfile =
+        Provider.of<ProfileProvider>(context, listen: false).profileByID;
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
@@ -40,21 +78,21 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             children: <Widget>[
-              imageProfile(),
+              imageProfile(loadedProfile.first.elderlyImage),
               SizedBox(height: 20),
-              nameTextField(),
+              nameTextField(loadedProfile.first.name),
               SizedBox(height: 20),
-              genderManu(),
+              genderManu(loadedProfile.first.gender),
               SizedBox(height: 20),
-              DOBTextField(),
+              DOBTextField(loadedProfile.first.DOB),
               SizedBox(height: 20),
-              BedNoTextField(),
+              BedNoTextField(loadedProfile.first.bedID),
               SizedBox(height: 20),
-              RoomIDTextField(),
+              RoomIDTextField(loadedProfile.first.roomID),
               SizedBox(height: 20),
-              RelativeTextField(),
+              RelativeTextField(loadedProfile.first.erID),
               SizedBox(height: 20),
-              DescTextField(),
+              DescTextField(loadedProfile.first.desc),
               SizedBox(height: 20),
               OutlinedButton(
                   style: OutlinedButton.styleFrom(
@@ -77,22 +115,24 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                       String profileData = jsonEncode({
                         'name': nameContoller.text,
                         'DOB': DOBcontroller.text,
-                        'gender': genderSelected.toLowerCase().toString(),
+                        'gender': genderSelected.toString(),
                         'roomID': roomNoContoller.text,
                         'bedNo': bedNoContoller.text,
                         'elderlyImage': img64.isEmpty ? null : img64,
                         'descrition': descContoller.text,
                         'erID': relativeContoller.text,
                       });
-                       Map<String,dynamic>? msg =  await addElderlyProfile(profileData);
+                      Map<String, dynamic>? msg =
+                          await addElderlyProfile(profileData);
 
-                       if(msg!.isNotEmpty){
-                          _showErrorDialog(msg['message'], msg['success'] != true ? 'Error': 'Message');
-                       }
+                      if (msg!.isNotEmpty) {
+                        _showErrorDialog(msg['message'],
+                            msg['success'] != true ? 'Error' : 'Message');
+                      }
                     }
                   },
                   child: Text(
-                    'Submit',
+                    'Edit',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -103,14 +143,13 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
         ));
   }
 
-  
   Future<void> _showErrorDialog(String msg, String title) {
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text(title),
+          title: Text(title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -131,15 +170,17 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
   }
 
   //Image upload widget
-  Widget imageProfile() {
+  Widget imageProfile(String elderlyImage) {
     return Center(
         child: Stack(
       children: <Widget>[
         CircleAvatar(
           radius: 80.0,
-          backgroundImage: _imageFile == null
+          backgroundImage: _imageFile == null && elderlyImage.isEmpty
               ? AssetImage('assets/image/icons8-selfies-50.png')
-              : FileImage(File(_imageFile!.first.path)) as ImageProvider,
+              : _imageFile != null && elderlyImage.isNotEmpty
+                  ? FileImage(File(_imageFile!.first.path)) as ImageProvider
+                  : MemoryImage(avatarImage(elderlyImage)),
         ),
         Positioned(
             bottom: 20.0,
@@ -215,7 +256,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     }
   }
 
-  Widget nameTextField() {
+  Widget nameTextField(String name) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -224,7 +265,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           return null;
         }
       },
-      controller: nameContoller,
+      controller: nameContoller..text = name,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -246,7 +287,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget RoomIDTextField() {
+  Widget RoomIDTextField(String roomID) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -255,7 +296,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           return null;
         }
       },
-      controller: roomNoContoller,
+      controller: roomNoContoller..text = roomID,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -277,7 +318,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget BedNoTextField() {
+  Widget BedNoTextField(String bedID) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -286,7 +327,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           return null;
         }
       },
-      controller: bedNoContoller,
+      controller: bedNoContoller..text = bedID,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -308,7 +349,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget RelativeTextField() {
+  Widget RelativeTextField(int erID) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -317,7 +358,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           return null;
         }
       },
-      controller: relativeContoller,
+      controller: relativeContoller..text = erID.toString(),
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -339,7 +380,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget DOBTextField() {
+  Widget DOBTextField(String dob) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -348,7 +389,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           return null;
         }
       },
-      controller: DOBcontroller,
+      controller: DOBcontroller..text = dob,
       readOnly: true,
       decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -388,11 +429,11 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget DescTextField() {
+  Widget DescTextField(String desc) {
     return TextFormField(
       maxLines: 4,
       maxLength: 400,
-      controller: descContoller,
+      controller: descContoller..text = desc,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -414,8 +455,14 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget genderManu() {
-    String dropdownValue = 'Male';
+  Widget genderManu(String gender) {
+    String dropdownValue;
+    if (gender.isNotEmpty) {
+      dropdownValue = gender;
+    } else {
+      dropdownValue = 'Male';
+    }
+
     return DropdownButtonFormField(
         items: <String>['Male', 'Female']
             .map<DropdownMenuItem<String>>((String value) {
@@ -431,7 +478,6 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           setState(() {
             dropdownValue = newValue!;
             genderSelected = newValue;
-            print(genderSelected);
           });
         },
         value: dropdownValue,

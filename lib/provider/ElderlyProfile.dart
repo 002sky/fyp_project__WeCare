@@ -32,6 +32,7 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
     }
   } catch (e) {
     log(e.toString());
+    print(e);
   }
   return resultList;
 }
@@ -82,7 +83,10 @@ Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {
 
 Future<Map<String, dynamic>?> addElderlyProfile(String data) async {
   final url = Uri.parse(databaseURL().toString() + 'api/admin/createProfile');
-  Map<String, dynamic>? responseMessage = {'success' : false ,'message':'Something went wrong'};
+  Map<String, dynamic>? responseMessage = {
+    'success': false,
+    'message': 'Something went wrong'
+  };
   try {
     final response = await http.post(
       url,

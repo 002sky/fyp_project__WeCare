@@ -30,9 +30,9 @@ class ProfileDetail {
         DOB: json['DOB'] ?? '',
         gender: json['gender'] ?? '',
         roomID: json['roomID'] ?? '',
-        bedID: json['bedID'] ?? '',
-        elderlyImage: json['elderlyImage'],
-        desc: json['desc'] ?? '',
-        erID: json['erID'] ?? '');
+        bedID: json['bedNo'] ?? '',
+        desc: json['descrition'] ?? '',
+        erID: json['erID'] ?? '',
+                elderlyImage: json['elderlyImage'] ?? '',);
   }
 }

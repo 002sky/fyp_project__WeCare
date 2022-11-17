@@ -47,6 +47,7 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
             appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       ),
       floatingActionButton: FloatingActionButton(
+         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
         onPressed: (() {
           Navigator.push(

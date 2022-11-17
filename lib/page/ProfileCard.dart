@@ -15,8 +15,8 @@ class ProfileCard extends StatelessWidget {
   final String desc;
   final String elderlyImage;
   final String id;
-  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc,this.elderlyImage,
-      this.id);
+  ProfileCard(this.name, this.DOB, this.bedID, this.gender, this.desc,
+      this.elderlyImage, this.id);
 
   IconData iconType(String gender) {
     if (gender.toLowerCase() == "male") {
@@ -28,9 +28,15 @@ class ProfileCard extends StatelessWidget {
     }
   }
 
+  Uint8List avatarImage(String img){
+    Uint8List bytes = base64.decode(img);
+    return bytes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
+        minVerticalPadding:10,
         onTap: () => {
               Navigator.push(
                 context,
@@ -47,7 +53,18 @@ class ProfileCard extends StatelessWidget {
             maxWidth: 64,
             maxHeight: 64,
           ),
-          child: elderlyImage.isEmpty ? Text('nothing') : Image.memory(base64.decode(elderlyImage)),
+          child: elderlyImage.isEmpty
+              ? CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    name[0].toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                  ),
+                )
+              : CircleAvatar(
+                backgroundImage: MemoryImage(avatarImage(elderlyImage)),
+
+                ),
           // child: Text(bedID),
         ),
         title: Text(name),
