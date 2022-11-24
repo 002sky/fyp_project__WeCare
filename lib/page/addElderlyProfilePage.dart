@@ -367,7 +367,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             color: Theme.of(context).primaryColor,
           ),
           labelText: 'Date of Birth',
-          helperText: 'Bed No Cannot Be Empty'),
+          helperText: 'Date of Birth Cannot Be Empty'),
       onTap: () async {
         DateTime? pickedDate = await showDatePicker(
             context: context,

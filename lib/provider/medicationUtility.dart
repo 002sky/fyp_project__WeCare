@@ -44,6 +44,7 @@ Future<bool> setMedicationData(String data) async {
     final response = await http.post(url, body: data, headers: {
       HttpHeaders.contentTypeHeader: "application/json",
     });
+    print(response.body);
 
     if (response.statusCode == 200) {
       final medicationMessage = json.decode(response.body);
@@ -53,6 +54,8 @@ Future<bool> setMedicationData(String data) async {
       if (successMessage.toString() == 'true') {
         message = true;
       }
+    } else {
+      print(response.body);
     }
   } catch (e) {
     print(e);

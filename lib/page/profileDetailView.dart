@@ -19,25 +19,15 @@ class ProfileDetailView extends StatelessWidget {
         backgroundColor: Color(0xff5ac18e),
         title: Text('profile detail'),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          children: <Widget>[
-            Text(id),
-            ProfileDetailCard(id),
-            OutlinedButton(        onPressed: () => {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) =>EditElderlyProfilePage(id),
-                fullscreenDialog: true,
-              ))
-        }, child: Text('Edit')),
-
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 5),
+          ProfileDetailCard(id),
+         
+        ],
       ),
     );
   }
+
 
 }

@@ -84,7 +84,9 @@ class _MedicationListState extends State<MedicationList> {
             medicationData[index].type,
             medicationData[index].quantity,
             medicationData[index].description,
-            medicationData[index].expireDate);
+            medicationData[index].expireDate,
+            medicationData[index].id,
+            );
       }));
     }
   }

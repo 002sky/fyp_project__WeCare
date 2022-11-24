@@ -13,14 +13,13 @@ class ScheduleMainPage extends StatefulWidget {
 
 class _ScheduleMainPageState extends State<ScheduleMainPage> {
   var _isInit = true;
-  var _isLoading = false;
+
+
+
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
 
       String? id = Provider.of<Auth>(context, listen: false).userID;
 
@@ -28,9 +27,7 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
         context,
         listen: false,
       ).getScheduleData(id!).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
+
       });
     }
     _isInit = false;
@@ -45,9 +42,14 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
         dataSource: scheduleDataSource(_getScheduleData()),
         monthViewSettings: MonthViewSettings(
             appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
+        showWeekNumber: true,
+        weekNumberStyle: const WeekNumberStyle(
+          backgroundColor: Colors.pink,
+          textStyle: TextStyle(color: Colors.white, fontSize: 15),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-         backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
         onPressed: (() {
           Navigator.push(
@@ -69,7 +71,6 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
 }
 
 class scheduleDataSource extends CalendarDataSource {
-
   scheduleDataSource(List<Schedule> source) {
     appointments = source;
   }
@@ -89,15 +90,6 @@ class scheduleDataSource extends CalendarDataSource {
     return _getScheduleData(index).eventName;
   }
 
-  // @override
-  // Color getColor(int index) {
-  //   return _getScheduleData(index).color_display;
-  // }
-
-  // @override
-  // bool isAllDay(int index) {
-  //   return _getScheduleData(index).isAllDay;
-  // }
 
   Schedule _getScheduleData(int index) {
     final dynamic schedule = appointments![index];

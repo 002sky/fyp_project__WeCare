@@ -109,10 +109,10 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
                           await File(_imageFile!.first.path).readAsBytes();
                       img64 = base64Encode(bytes);
                     }
-
                     //check the validation of the form, if form not error encode to json send to networkUtil
                     if (_formKey.currentState!.validate()) {
                       String profileData = jsonEncode({
+                        'id': widget.id,
                         'name': nameContoller.text,
                         'DOB': DOBcontroller.text,
                         'gender': genderSelected.toString(),
@@ -123,7 +123,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
                         'erID': relativeContoller.text,
                       });
                       Map<String, dynamic>? msg =
-                          await addElderlyProfile(profileData);
+                          await editProfile(profileData);
 
                       if (msg!.isNotEmpty) {
                         _showErrorDialog(msg['message'],
@@ -474,6 +474,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           );
         }).toList(),
+        
         onChanged: (String? newValue) {
           setState(() {
             dropdownValue = newValue!;

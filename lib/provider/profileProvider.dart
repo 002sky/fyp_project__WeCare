@@ -50,3 +50,6 @@ class ProfileProvider extends ChangeNotifier {
 
   addProfile(String data) {}
 }
+
+
+

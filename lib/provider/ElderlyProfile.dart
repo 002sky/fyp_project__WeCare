@@ -103,7 +103,25 @@ Future<Map<String, dynamic>?> addElderlyProfile(String data) async {
   return responseMessage;
 }
 
+Future<Map<String, dynamic>?> editProfile(String data) async {
+  final url = Uri.parse(databaseURL().toString() + 'api/admin/editProfile');
 
+  Map<String, dynamic>? responseMessage = {
+    'success': false,
+    'message': 'Something went wrong'
+  };
+
+  try {
+    final response = await http.post(url, body: data, headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+    });
+
+    responseMessage = jsonDecode(response.body);
+  } catch (e) {
+    print(e);
+    return responseMessage;
+  }
+}
 // class Profile with ChangeNotifier {
 //   List<ProfileDetail> _profile = [];
 

@@ -56,6 +56,12 @@ class _ProfileCareListState extends State<ProfileCareList> {
   var _isLoading = false;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
