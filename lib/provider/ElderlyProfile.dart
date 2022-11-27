@@ -99,12 +99,13 @@ Future<Map<String, dynamic>?> addElderlyProfile(String data) async {
     responseMessage = jsonDecode(response.body);
   } catch (e) {
     print(e);
+      return responseMessage;
   }
   return responseMessage;
 }
 
 Future<Map<String, dynamic>?> editProfile(String data) async {
-  final url = Uri.parse(databaseURL().toString() + 'api/admin/editProfile');
+  final url = Uri.parse(databaseURL().toString() + 'api/admin/editElderlyProfile');
 
   Map<String, dynamic>? responseMessage = {
     'success': false,
@@ -117,10 +118,12 @@ Future<Map<String, dynamic>?> editProfile(String data) async {
     });
 
     responseMessage = jsonDecode(response.body);
+
   } catch (e) {
     print(e);
     return responseMessage;
   }
+  return responseMessage;
 }
 // class Profile with ChangeNotifier {
 //   List<ProfileDetail> _profile = [];

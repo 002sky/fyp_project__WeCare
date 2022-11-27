@@ -1,11 +1,7 @@
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/page/ProfileDetailCard.dart';
-import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
-import 'package:fyp_project_testing/page/editProfilePage.dart';
 
-import 'package:provider/provider.dart';
-import '../provider/profileProvider.dart';
 
 class ProfileDetailView extends StatelessWidget {
   final id;

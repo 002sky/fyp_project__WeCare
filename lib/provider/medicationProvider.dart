@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fyp_project_testing/provider/medicationUtility.dart';
+import 'package:http/http.dart';
 import '../modal/medicaion.dart';
 
 class MedicationProvider extends ChangeNotifier {
@@ -30,12 +31,13 @@ class MedicationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setMedication(String data) {
-    _isloading = true;
-    bool success = setMedication(data);
-    _isloading = false;
+  Future<Map<String, dynamic>?> setMedication(String data) {
+    Future<Map<String, dynamic>?> success = setMedicationData(data);
 
-    notifyListeners();
+    getMedicationData();
+  
+
+    return success;
   }
 
   Future<void> getMedicationByID(String id) async {

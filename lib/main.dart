@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
+import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
 import 'package:fyp_project_testing/provider/scheduleProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: ((context) => MedicationProvider()),
         ),
+        ChangeNotifierProvider(
+          create: ((context) => MedicationTimingProvder()),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
@@ -39,7 +43,6 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.light(
                 primary: Color(0xff5ac18e),
                 secondary: Color(0x405ac18e),
-                
               ),
               toggleableActiveColor: Colors.orange,
               fontFamily: 'Lato',

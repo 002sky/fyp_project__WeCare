@@ -78,7 +78,8 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             children: <Widget>[
-              imageProfile(loadedProfile.first.elderlyImage),
+              imageProfile(
+                  loadedProfile.first.elderlyImage, loadedProfile.first.name),
               SizedBox(height: 20),
               nameTextField(loadedProfile.first.name),
               SizedBox(height: 20),
@@ -170,18 +171,28 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
   }
 
   //Image upload widget
-  Widget imageProfile(String elderlyImage) {
+  Widget imageProfile(String elderlyImage, String name) {
     return Center(
         child: Stack(
       children: <Widget>[
-        CircleAvatar(
-          radius: 80.0,
-          backgroundImage: _imageFile == null && elderlyImage.isEmpty
-              ? AssetImage('assets/image/icons8-selfies-50.png')
-              : _imageFile != null && elderlyImage.isNotEmpty
-                  ? FileImage(File(_imageFile!.first.path)) as ImageProvider
-                  : MemoryImage(avatarImage(elderlyImage)),
-        ),
+        _imageFile == null && elderlyImage.isNotEmpty
+            ? CircleAvatar(
+                radius: 80,
+                backgroundImage: MemoryImage(avatarImage(elderlyImage)))
+            : _imageFile != null 
+                ? CircleAvatar(
+                  radius: 80,
+                  backgroundImage: FileImage(File(_imageFile!.first.path)),
+                )
+                : CircleAvatar(
+                    radius: 80.0,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      name[0].toUpperCase(),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                    ),
+                  ),
         Positioned(
             bottom: 20.0,
             right: 20.0,
@@ -474,7 +485,6 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           );
         }).toList(),
-        
         onChanged: (String? newValue) {
           setState(() {
             dropdownValue = newValue!;

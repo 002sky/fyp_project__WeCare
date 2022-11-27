@@ -4,7 +4,7 @@ import 'package:fyp_project_testing/page/ProfileCard.dart';
 import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
-import '../provider/ElderlyProfile.dart';
+
 
 class ProfileMainPage extends StatelessWidget {
   static const routeName = "/profileMainPage";
@@ -67,14 +67,10 @@ class _ProfileCareListState extends State<ProfileCareList> {
       setState(() {
         _isLoading = true;
       });
-
       Provider.of<ProfileProvider>(
         context,
         listen: false,
       ).getPostData().then((_) {
-        setState(() {
-          _isLoading = false;
-        });
       });
     }
     _isInit = false;
@@ -108,6 +104,5 @@ class _ProfileCareListState extends State<ProfileCareList> {
         },
       ));
     }
-    // return Text(postD.post?.last.DOB ?? '') ;
   }
 }

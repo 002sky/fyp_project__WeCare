@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+
 import 'dart:io';
 import 'dart:core';
 
@@ -35,8 +35,11 @@ Future<List<Medication>> fetchMedicationData() async {
   return resultList;
 }
 
-Future<bool> setMedicationData(String data) async {
-  bool message = false;
+Future<Map<String, dynamic>?> setMedicationData(String data) async {
+  Map<String, dynamic>? responseMessage = {
+    'success': false,
+    'message': 'Something went wrong'
+  };
 
   final url = Uri.parse(databaseURL() + 'api/admin/setMedication');
 
@@ -47,18 +50,15 @@ Future<bool> setMedicationData(String data) async {
     print(response.body);
 
     if (response.statusCode == 200) {
-      final medicationMessage = json.decode(response.body);
-      print(medicationMessage);
-      final successMessage = medicationMessage['success'];
-
-      if (successMessage.toString() == 'true') {
-        message = true;
-      }
+      responseMessage = jsonDecode(response.body);
     } else {
       print(response.body);
+      
+      return responseMessage;
     }
   } catch (e) {
     print(e);
   }
-  return message;
+
+  return responseMessage;
 }

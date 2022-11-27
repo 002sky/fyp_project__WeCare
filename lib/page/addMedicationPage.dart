@@ -2,10 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:fyp_project_testing/page/addMedicationTiming.dart';
+// import 'package:fyp_project_testing/provider/medicationUtility.dart';
+import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationUtility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class AddMedicationPage extends StatefulWidget {
   const AddMedicationPage({super.key});
@@ -56,22 +61,77 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
               ERTextField(),
               OutlinedButton(
                 child: Text('Submit'),
-                onPressed: () {
-                  String data = json.encode({
-                    'medicationName': medicationNameController.text,
-                    'type': medicationTypeController.text,
-                    'description': medicationDescriptionController.text,
-                    'expireDate': expireDateController.text,
-                    'manufactureDate': manufactureDate.text,
-                    'quantity': quantityController.text,
-                    'elderlyID': elderlyIDController.text,
-                  });
-                  print(data);
-                  setMedicationData(data);
+                onPressed: () async {
+                  //cover the image into base64 and bytes to store into database
+                  String img64;
+                  if (_imageFile == null) {
+                    img64 = '';
+                  } else {
+                    final bytes =
+                        await File(_imageFile!.first.path).readAsBytes();
+                    img64 = base64Encode(bytes);
+                  }
+
+                  if (_formKey.currentState!.validate()) {
+                    String data = json.encode({
+                      'medicationName': medicationNameController.text,
+                      'type': medicationTypeController.text,
+                      'description': medicationDescriptionController.text,
+                      'expireDate': expireDateController.text,
+                      'manufactureDate': manufactureDate.text,
+                      'quantity': quantityController.text,
+                      'elderlyID': elderlyIDController.text,
+                    });
+
+                    print(data);
+
+                    Map<String, dynamic>? msg = await Provider.of<MedicationProvider>(context,listen: false).setMedication(data);
+
+                    if (msg!.isNotEmpty) {
+                      _showErrorDialog(
+                          msg['message'],
+                          msg['success'] != true ? 'Error' : 'Message',
+                          msg['ID'].toString());
+                    }
+                  }
                 },
               ),
             ]),
       ),
+    );
+  }
+
+  Future<void> _showErrorDialog(String msg, String title, String id) {
+
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(id),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          AddMedicationTiming(id),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                child: Text('Confirm'))
+          ],
+        );
+      },
     );
   }
 

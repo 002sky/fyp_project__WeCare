@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddElderlyProfilePage extends StatefulWidget {
-  const AddElderlyProfilePage( {super.key});
+  const AddElderlyProfilePage({super.key});
 
   @override
   State<AddElderlyProfilePage> createState() => _AddElderlyProfilePageState();
@@ -26,7 +26,6 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
 
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,18 +76,22 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                       String profileData = jsonEncode({
                         'name': nameContoller.text,
                         'DOB': DOBcontroller.text,
-                        'gender': genderSelected.toLowerCase().toString(),
+                        'gender': genderSelected.toString(),
                         'roomID': roomNoContoller.text,
                         'bedNo': bedNoContoller.text,
                         'elderlyImage': img64.isEmpty ? null : img64,
                         'descrition': descContoller.text,
                         'erID': relativeContoller.text,
                       });
-                       Map<String,dynamic>? msg =  await addElderlyProfile(profileData);
+                      Map<String, dynamic>? msg =
+                          await addElderlyProfile(profileData);
 
-                       if(msg!.isNotEmpty){
-                          _showErrorDialog(msg['message'], msg['success'] != true ? 'Error': 'Message');
-                       }
+                      if (msg!.isNotEmpty) {
+                        _showErrorDialog(msg['message'],
+                            msg['success'] != true ? 'Error' : 'Message');
+                            
+                      }
+
                     }
                   },
                   child: Text(
@@ -103,14 +106,13 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
         ));
   }
 
-  
   Future<void> _showErrorDialog(String msg, String title) {
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title:  Text(title),
+          title: Text(title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
