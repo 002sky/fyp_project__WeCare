@@ -5,7 +5,6 @@ import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
 
-
 class ProfileMainPage extends StatelessWidget {
   static const routeName = "/profileMainPage";
   // List<Profile> elderprofile = dummy_profile.toList();
@@ -54,11 +53,18 @@ class ProfileCareList extends StatefulWidget {
 class _ProfileCareListState extends State<ProfileCareList> {
   var _isInit = true;
   var _isLoading = false;
-
+  late final postD;
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    postD = Provider.of<ProfileProvider>(context, listen: false).profile;
+    super.initState();
   }
 
   @override
@@ -71,6 +77,9 @@ class _ProfileCareListState extends State<ProfileCareList> {
         context,
         listen: false,
       ).getPostData().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
       });
     }
     _isInit = false;
@@ -80,29 +89,27 @@ class _ProfileCareListState extends State<ProfileCareList> {
 
   @override
   Widget build(BuildContext context) {
-    final postD = Provider.of<ProfileProvider>(context, listen: false).profile;
-    if (postD.isEmpty) {
-      return Container(
-        child: Text('nothing Yet'),
-      );
-    } else {
-      return Expanded(
-          child: ListView.builder(
-        itemCount: postD.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-            child: ProfileCard(
-                postD[index].name,
-                postD[index].DOB,
-                postD[index].bedID,
-                postD[index].gender,
-                postD[index].desc,
-                postD[index].elderlyImage,
-                postD[index].id),
-          );
-        },
-      ));
-    }
+    return _isLoading == true
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Expanded(
+            child: ListView.builder(
+            itemCount: postD.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+                child: ProfileCard(
+                    postD[index].name,
+                    postD[index].DOB,
+                    postD[index].bedID,
+                    postD[index].gender,
+                    postD[index].desc,
+                    postD[index].elderlyImage,
+                    postD[index].id),
+              );
+            },
+        )
+        );
   }
 }

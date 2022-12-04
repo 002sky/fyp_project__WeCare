@@ -87,7 +87,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                           await addElderlyProfile(profileData);
 
                       if (msg!.isNotEmpty) {
-                        _showErrorDialog(msg['message'],
+                        _showErrorDialog(msg['message'].toString(),
                             msg['success'] != true ? 'Error' : 'Message');
                             
                       }

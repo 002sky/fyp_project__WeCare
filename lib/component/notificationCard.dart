@@ -1,41 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/page/scheduleDetailView.dart';
+import 'package:intl/intl.dart';
 
-class NotificationCard extends StatefulWidget {
-  @override
-  State<NotificationCard> createState() => _NotificationCard();
-}
+class NotificationCard extends StatelessWidget {
+  final String taskName;
+  final String time;
 
-class _NotificationCard extends State<NotificationCard> {
+  NotificationCard(this.taskName, this.time);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: () => {},
-        title: Text('Prepare Breakfirst'),
-        trailing: Text('7.00AM'),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.black54, width: 1),
-        ),
-        subtitle: Container(
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                children: [Text('testing')],
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: () => {},
-                    child: Text('Daily'),
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)))),
-                  ),
-               
-                ],
-              )
-            ],
-          ),
-        ));
+      onTap: () => {
+
+         Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => ScheduleDetailView(this.taskName,this.time),
+                  fullscreenDialog: true,
+                ),)
+      },
+      title: Text(taskName),
+      trailing: Text(stringToTimeOfDay(time).format(context)),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.black54, width: 1),
+      ),
+    );
+  }
+
+  TimeOfDay stringToTimeOfDay(String tod) {
+    TimeOfDay _startTime = TimeOfDay(
+        hour: int.parse(tod.split(":")[0]),
+        minute: int.parse(tod.split(":")[1]));
+
+    return _startTime;
   }
 }

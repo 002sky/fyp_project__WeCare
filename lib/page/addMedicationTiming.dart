@@ -6,6 +6,8 @@ import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'package:intl/intl.dart';
+
 class AddMedicationTiming extends StatefulWidget {
   final id;
   const AddMedicationTiming(this.id, {super.key});
@@ -51,7 +53,7 @@ class _AddMedicationTimingState extends State<AddMedicationTiming> {
           title: Text('Set Medication Timing'),
         ),
         body: _isInit == false
-            ? Column(
+            ? ListView(
                 children: <Widget>[
                   ContentDisplay(
                       'Medication Name', loadedMedication.first.medicationName),
@@ -112,7 +114,8 @@ class DynamicAddForm extends StatefulWidget {
 }
 
 class _DynamicAddFormState extends State<DynamicAddForm> {
-  late int _count;
+  List<TextEditingController> _textEditor = [];
+  List<TextFormField> _generating = [];
 
   late List<Map<String, dynamic>> _value;
 
@@ -120,7 +123,6 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _count = 0;
     _value = [];
   }
 
@@ -136,9 +138,7 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
               Text('Medications Timeing:'),
               IconButton(
                   onPressed: () {
-                    setState(() {
-                      _count++;
-                    });
+                    _addInputField(context);
                   },
                   icon: Icon(
                     Icons.add_circle,
@@ -147,10 +147,11 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
               IconButton(
                   onPressed: () {
                     setState(() {
-                      if (_count > 1) {
-                        _count--;
-                        _onDetete(_count);
+                      if (_generating.length > 1) {
+                        _generating.removeLast();
+                        _textEditor.removeLast();
                       }
+                      print(_generating.length);
                     });
                   },
                   icon: Icon(
@@ -162,13 +163,13 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
         ),
         ListView.builder(
             shrinkWrap: true,
-            itemCount: _count,
+            itemCount: _generating.length,
             itemBuilder: (context, index) {
-              return _row(index);
+              return _generating.elementAt(index);
             }),
         OutlinedButton(
             onPressed: () async {
-              print(widget.id + _value.toString());
+              gettingValue();
               String data = json.encode({
                 'elderlyID': widget.id,
                 'time_status': _value,
@@ -178,71 +179,86 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
                   await Provider.of<MedicationTimingProvder>(context,
                           listen: false)
                       .setMedicationTiming(data);
+
+              print(msg);
+              _value.clear();
             },
             child: Text('data'))
       ],
     );
   }
 
-  _row(int key) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        children: [
-          Text('id: $key'),
-          SizedBox(
-            width: 20,
+  _addInputField(context) {
+    final inputFieldController = TextEditingController();
+    final inputField = _generateInputFiled(inputFieldController);
+
+    setState(() {
+      _textEditor.add(inputFieldController);
+      _generating.add(inputField);
+    });
+  }
+
+  _generateInputFiled(inputController) {
+    TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Date of Birth Cannot be empty...';
+        } else {
+          return null;
+        }
+      },
+      controller: inputController,
+      readOnly: true,
+      decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+            ),
           ),
-          Expanded(child: TextFormField(
-            onChanged: ((value) {
-              _onUpdate(key, value);
-            }),
-          )),
-        ],
-      ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).toggleableActiveColor,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(
+            Icons.date_range_outlined,
+            color: Theme.of(context).primaryColor,
+          ),
+          labelText: 'Medication Timing',
+          helperText: 'Medication Timing Cannot Be Empty'),
+      onTap: () async {
+        TimeOfDay? picked = await showTimePicker(
+            context: context,
+            initialTime: selectedTime,
+            initialEntryMode: TimePickerEntryMode.input);
+        if (picked != null) {
+          setState(() {
+            selectedTime = picked;
+            inputController.text = formatTimeOfDay(picked);
+          });
+        }
+      },
     );
   }
 
-  _onUpdate(int key, String val) {
-    int foundKey = -1;
-
-    for (var map in _value) {
-      if (map.containsKey('id')) {
-        if (map['id'] == key) {
-          foundKey = key;
-          break;
-        }
-      }
-    }
-
-    if (-1 != foundKey) {
-      _value.removeWhere((map) {
-        return map['id'] == foundKey;
-      });
-    }
-
-    Map<String, dynamic> json = {'id': key, 'Time': val, 'Status': false};
-
-    _value.add(json);
-
-    print(_value);
+  String formatTimeOfDay(TimeOfDay tod) {
+    final now = new DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); //"6:00 AM"
+    return format.format(dt);
   }
 
-  _onDetete(int id) {
-    int foundKey = -1;
-    for (var map in _value) {
-      if (map.containsKey('id')) {
-        if (map['id'] == id) {
-          foundKey = id;
-          break;
-        }
+  List<Map<String, dynamic>> gettingValue() {
+    for (var time in _textEditor) {
+      Map<String, dynamic> json = {'Time': time.text};
+
+      if (_textEditor.length > _value.length) {
+        _value.add(json);
       }
     }
-
-    if (-1 != foundKey) {
-      _value.removeWhere((map) {
-        return map['id'] == foundKey;
-      });
-    }
+    print(_value);
+    return _value;
   }
 }
