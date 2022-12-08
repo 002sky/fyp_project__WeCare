@@ -34,14 +34,16 @@ class DailyScheduleDetail {
   final String? id;
   final String? medicationName;
   final String? type;
+  final bool? status;
 
   DailyScheduleDetail(
-      {required this.id, this.medicationName, required this.type});
+      {required this.id, required this.medicationName, required this.type, required this.status});
 
   factory DailyScheduleDetail.fromJson(Map<String, dynamic> json) {
     return DailyScheduleDetail(
         id: json['id'].toString(),
         medicationName: json['medicationName'],
+        status: json['status'] ==1 ? true: false,
         type: json['type']);
   }
 }

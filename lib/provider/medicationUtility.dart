@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:core';
 
 import 'package:fyp_project_testing/config/databaseConfig.dart';
-import 'package:fyp_project_testing/modal/medicaion.dart';
+import 'package:fyp_project_testing/modal/medication.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Medication>> fetchMedicationData() async {

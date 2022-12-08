@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fyp_project_testing/provider/medicationUtility.dart';
 import 'package:http/http.dart';
-import '../modal/medicaion.dart';
+import '../modal/medication.dart';
 
 class MedicationProvider extends ChangeNotifier {
   List<Medication>? _medication = [];
@@ -35,7 +35,6 @@ class MedicationProvider extends ChangeNotifier {
     Future<Map<String, dynamic>?> success = setMedicationData(data);
 
     getMedicationData();
-  
 
     return success;
   }
@@ -55,5 +54,26 @@ class MedicationProvider extends ChangeNotifier {
     _isloading = false;
 
     _MedicationByID = loadedMedicationByID;
+  }
+
+  Future<void> getMedicationByElderly(String id) async {
+    List<Medication>? loadedMedicationByID = [];
+
+    _isloading = true;
+
+    if (medication.isNotEmpty) {
+      try {
+        var Findid = medication.where((element) => element.elderlyID == id);
+        if (Findid.isNotEmpty) {
+          loadedMedicationByID = Findid.toList();
+          _MedicationByID = loadedMedicationByID;
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+    _isloading = false;
+
+    
   }
 }

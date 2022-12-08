@@ -10,7 +10,6 @@ import '../provider/profileProvider.dart';
 
 import '../page/authPage.dart';
 import '../page/mainPage.dart';
-import '../page/splashPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -61,7 +60,7 @@ class MyApp extends StatelessWidget {
                   builder: (context, authResultSnpshot) =>
                       authResultSnpshot.connectionState ==
                               ConnectionState.waiting
-                          ? SplashPage()
+                          ? CircularProgressIndicator()
                           : AuthPage(),
                 ),
           routes: {},

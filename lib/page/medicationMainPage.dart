@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_project_testing/modal/medicaion.dart';
+import 'package:fyp_project_testing/modal/medication.dart';
 import 'package:fyp_project_testing/page/medicationCard.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:provider/provider.dart';

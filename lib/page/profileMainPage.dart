@@ -63,7 +63,7 @@ class _ProfileCareListState extends State<ProfileCareList> {
   @override
   void initState() {
     // TODO: implement initState
-    postD = Provider.of<ProfileProvider>(context, listen: false).profile;
+    
     super.initState();
   }
 
@@ -77,6 +77,7 @@ class _ProfileCareListState extends State<ProfileCareList> {
         context,
         listen: false,
       ).getPostData().then((_) {
+        postD = Provider.of<ProfileProvider>(context, listen: false).profile;
         setState(() {
           _isLoading = false;
         });

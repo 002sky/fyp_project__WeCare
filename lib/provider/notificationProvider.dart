@@ -12,10 +12,9 @@ class notificationProvider extends ChangeNotifier {
   List<notificationDaily>? _notificationByName = [];
   List<DailySchedule>? _scheduleDetails = [];
 
-List<DailySchedule> get scheduleDetail{
-   return [...?_scheduleDetails];
+  List<DailySchedule> get scheduleDetail {
+    return [...?_scheduleDetails];
   }
-
 
   List<notificationDaily> get notification {
     return [...?_notification];
@@ -24,8 +23,6 @@ List<DailySchedule> get scheduleDetail{
   List<notificationDaily> get notificationbyName {
     return [...?_notificationByName];
   }
-
-
 
   getNotificationList() async {
     notificationDaily? result;
@@ -53,13 +50,13 @@ List<DailySchedule> get scheduleDetail{
     }
   }
 
-  getScheduleDetail(String data) async{
+  getScheduleDetail(String data) async {
     DailySchedule? result;
     List<DailySchedule>? resultList = [];
     final url = Uri.parse(databaseURL() + "api/admin/taskDetail");
 
-try {
-      final responseList = await http.post(url,body: data, headers: {
+    try {
+      final responseList = await http.post(url, body: data, headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       });
 
@@ -78,8 +75,30 @@ try {
     } catch (e) {
       print(e);
     }
+  }
 
+  Future<Map<String, dynamic>> updateDailySchedule(String data) async {
+    Map<String, dynamic> message = {
+      'success': false,
+      'message': 'Something went wrong'
+    };
 
+    final url = Uri.parse(databaseURL() + "api/admin/updateScheduleStatus");
+    try {
+      final response = await http.post(url, body: data, headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      });
+      if (response.statusCode == 200) {
+        message = jsonDecode(response.body);
+      } else {
+        print(response.body);
 
+        return message;
+      }
+    } catch (e) {
+      return message;
+    }
+
+    return message;
   }
 }
