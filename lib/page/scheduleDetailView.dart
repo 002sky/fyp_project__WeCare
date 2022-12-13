@@ -123,6 +123,9 @@ class _ScheduleDetailViewState extends State<ScheduleDetailView> {
                       ? Colors.green
                       : Colors.redAccent,
                   title: Text(detail[index].medicationName.toString()),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(detail[index].type.toString())]),
                   trailing: Icon(Icons.arrow_left_outlined),
                 ),
                 endActionPane: ActionPane(

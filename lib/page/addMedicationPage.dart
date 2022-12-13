@@ -1,11 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fyp_project_testing/page/addMedicationTiming.dart';
-// import 'package:fyp_project_testing/provider/medicationUtility.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
-import 'package:fyp_project_testing/provider/medicationUtility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -24,7 +20,7 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
   final medicationTypeController = TextEditingController();
   final medicationDescriptionController = TextEditingController();
   final expireDateController = TextEditingController();
-  final manufactureDate = TextEditingController();
+  final doseController = TextEditingController();
   final quantityController = TextEditingController();
   final elderlyIDController = TextEditingController();
 
@@ -78,7 +74,8 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
                       'type': medicationTypeController.text,
                       'description': medicationDescriptionController.text,
                       'expireDate': expireDateController.text,
-                      'manufactureDate': manufactureDate.text,
+                      'dose': doseController.text,
+                      'image': img64.isEmpty ? null : img64,
                       'quantity': quantityController.text,
                       'elderlyID': elderlyIDController.text,
                     });
@@ -134,6 +131,8 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
       },
     );
   }
+
+  
 
   Widget imageMedication() {
     return Center(
@@ -365,13 +364,12 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Manufucture Date Cannot be empty...';
+          return 'Dose Cannot be empty...';
         } else {
           return null;
         }
       },
-      controller: manufactureDate,
-      readOnly: true,
+      controller: doseController,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -385,28 +383,11 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.calendar_today,
+            Icons.numbers,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Manufucture Date',
-          helperText: 'Manufucture DAte Cannot Be Empty'),
-      onTap: () async {
-        DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1940),
-            lastDate: DateTime(2100));
-        if (pickedDate != null) {
-          setState(() {
-            String formatedDate = DateFormat('y-M-d').format(pickedDate);
-            manufactureDate.text = formatedDate.toString();
-          });
-        } else {
-          setState(() {
-            manufactureDate.text = '';
-          });
-        }
-      },
+          labelText: 'Dose',
+          helperText: 'Dose Cannot Be Empty'),
     );
   }
 

@@ -51,8 +51,6 @@ class _MainPage extends State<MainPage> {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? token = localStorage.getString('token');
 
-
-
     if (token != null) {
       setState(() {
         name = token;

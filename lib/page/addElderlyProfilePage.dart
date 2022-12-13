@@ -89,9 +89,8 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                       if (msg!.isNotEmpty) {
                         _showErrorDialog(msg['message'].toString(),
                             msg['success'] != true ? 'Error' : 'Message');
-                            
                       }
-
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },
                   child: Text(

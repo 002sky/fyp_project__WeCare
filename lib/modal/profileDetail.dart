@@ -1,5 +1,3 @@
-
-
 class ProfileDetail {
   final String id;
   final String name;
@@ -25,14 +23,15 @@ class ProfileDetail {
 
   factory ProfileDetail.fromJson(Map<String, dynamic> json) {
     return ProfileDetail(
-        id: json['id'].toString(),
-        name: json['name'] ?? '',
-        DOB: json['DOB'] ?? '',
-        gender: json['gender'] ?? '',
-        roomID: json['roomID'] ?? '',
-        bedID: json['bedNo'] ?? '',
-        desc: json['descrition'] ?? '',
-        erID: json['erID'] ?? '',
-                elderlyImage: json['elderlyImage'] ?? '',);
+      id: json['id'].toString(),
+      name: json['name'] ?? '',
+      DOB: json['DOB'] ?? '',
+      gender: json['gender'] ?? '',
+      roomID: json['roomID'] ?? '',
+      bedID: json['bedNo'] ?? '',
+      desc: json['descrition'] ?? '',
+      erID: json['erID'] ?? '',
+      elderlyImage: json['elderlyImage'] ?? '',
+    );
   }
 }

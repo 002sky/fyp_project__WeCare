@@ -1,39 +1,40 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
+import 'package:fyp_project_testing/modal/medication.dart';
+import 'package:fyp_project_testing/page/addMedicationTiming.dart';
+import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+
 import 'package:provider/provider.dart';
 
-import '../provider/profileProvider.dart';
+class EditMedicationPage extends StatefulWidget {
+  var id;
 
-class EditElderlyProfilePage extends StatefulWidget {
-  const EditElderlyProfilePage(this.id, {super.key});
-  final id;
+  EditMedicationPage(this.id, {super.key});
 
   @override
-  State<EditElderlyProfilePage> createState() => _EditElderlyProfilePageState();
+  State<EditMedicationPage> createState() => _EditMedicationPage();
 }
 
-class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
-  final DOBcontroller = TextEditingController();
-  final bedNoContoller = TextEditingController();
-  final roomNoContoller = TextEditingController();
-  final nameContoller = TextEditingController();
-  final descContoller = TextEditingController();
-  final relativeContoller = TextEditingController();
-  String genderSelected = 'Male';
-
-  var _isInit = true;
-  var _isLoading = false;
-  var loadedProfile;
-  final _formKey = GlobalKey<FormState>();
+class _EditMedicationPage extends State<EditMedicationPage> {
+  final medicationNameController = TextEditingController();
+  final medicationTypeController = TextEditingController();
+  final medicationDescriptionController = TextEditingController();
+  final expireDateController = TextEditingController();
+  final doseController = TextEditingController();
+  final quantityController = TextEditingController();
+  final elderlyIDController = TextEditingController();
 
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  final _formKey = GlobalKey<FormState>();
+
+  var _isInit = true;
+  var _isLoading = false;
+  var loadedMedication;
 
   @override
   void didChangeDependencies() {
@@ -42,12 +43,13 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
         _isLoading = true;
       });
 
-      Provider.of<ProfileProvider>(
+      Provider.of<MedicationProvider>(
         context,
         listen: false,
-      ).getProfileByID(widget.id).then((_) {
-        loadedProfile =
-            Provider.of<ProfileProvider>(context, listen: false).profileByID;
+      ).getMedicationByID(widget.id).then((_) {
+        loadedMedication =
+            Provider.of<MedicationProvider>(context, listen: false)
+                .medicationByID;
 
         setState(() {
           _isLoading = false;
@@ -59,7 +61,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
     ;
   }
 
-  Uint8List avatarImage(String img) {
+    Uint8List avatarImage(String img) {
     Uint8List bytes = base64.decode(img);
     return bytes;
   }
@@ -67,94 +69,91 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text('Create Elderly profile'),
-        ),
-        body: _isLoading == true
+      appBar: AppBar(
+        backgroundColor: Color(0xff5ac18e),
+        title: Text('Create Elderly profile'),
+      ),
+      body: Form(
+        key: _formKey,
+        child: _isLoading == true
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : Form(
-                key: _formKey,
-                child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  children: <Widget>[
-                    imageProfile(loadedProfile.first.elderlyImage,
-                        loadedProfile.first.name),
+            : ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                children: <Widget>[
+                    imageMedication(loadedMedication.first.image, loadedMedication.first.medicationName),
                     SizedBox(height: 20),
-                    nameTextField(loadedProfile.first.name),
+                    MedicationNameTextField(
+                        loadedMedication.first.medicationName),
                     SizedBox(height: 20),
-                    genderManu(loadedProfile.first.gender),
+                    MedicationTypeTextField(loadedMedication.first.type),
                     SizedBox(height: 20),
-                    DOBTextField(loadedProfile.first.DOB),
+                    MedicationDescTextField(loadedMedication.first.description),
                     SizedBox(height: 20),
-                    BedNoTextField(loadedProfile.first.bedID),
+                    DoseTextField(loadedMedication.first.dose),
                     SizedBox(height: 20),
-                    RoomIDTextField(loadedProfile.first.roomID),
+                    ExpireDateTextField(
+                        loadedMedication.first.expireDate.toString()),
                     SizedBox(height: 20),
-                    RelativeTextField(loadedProfile.first.erID),
+                    QuantityTextField(
+                        loadedMedication.first.quantity.toString()),
                     SizedBox(height: 20),
-                    DescTextField(loadedProfile.first.desc),
-                    SizedBox(height: 20),
+                    ERTextField(loadedMedication.first.elderlyID),
                     OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 20),
-                        ),
-                        onPressed: () async {
-                          //conver the Xfile Image to the Base64 String
-                          String img64;
-                          if (_imageFile == null) {
-                            img64 = '';
-                          } else {
-                            final bytes = await File(_imageFile!.first.path)
-                                .readAsBytes();
-                            img64 = base64Encode(bytes);
-                          }
-                          //check the validation of the form, if form not error encode to json send to networkUtil
-                          if (_formKey.currentState!.validate()) {
-                            String profileData = jsonEncode({
-                              'id': widget.id,
-                              'name': nameContoller.text,
-                              'DOB': DOBcontroller.text,
-                              'gender': genderSelected.toString(),
-                              'roomID': roomNoContoller.text,
-                              'bedNo': bedNoContoller.text,
-                              'elderlyImage': img64.isEmpty ? null : img64,
-                              'descrition': descContoller.text,
-                              'erID': relativeContoller.text,
-                            });
-                            Map<String, dynamic>? msg =
-                                await editProfile(profileData);
+                      child: Text('Submit'),
+                      onPressed: () async {
+                        //cover the image into base64 and bytes to store into database
+                        String img64;
+                        if (_imageFile == null) {
+                          img64 = '';
+                        } else {
+                          final bytes =
+                              await File(_imageFile!.first.path).readAsBytes();
+                          img64 = base64Encode(bytes);
+                        }
 
-                            if (msg!.isNotEmpty) {
-                              _showErrorDialog(msg['message'],
-                                  msg['success'] != true ? 'Error' : 'Message');
-                            }
+                        if (_formKey.currentState!.validate()) {
+                          String data = json.encode({
+                            'medicationName': medicationNameController.text,
+                            'type': medicationTypeController.text,
+                            'description': medicationDescriptionController.text,
+                            'expireDate': expireDateController.text,
+                            'dose': doseController.text,
+                            'image': img64.isEmpty ? null : img64,
+                            'quantity': quantityController.text,
+                            'elderlyID': elderlyIDController.text,
+                          });
+
+                          print(data);
+
+                          Map<String, dynamic>? msg =
+                              await Provider.of<MedicationProvider>(context,
+                                      listen: false)
+                                  .setMedication(data);
+
+                          if (msg!.isNotEmpty) {
+                            _showErrorDialog(
+                                msg['message'],
+                                msg['success'] != true ? 'Error' : 'Message',
+                                msg['ID'].toString());
                           }
-                        },
-                        child: Text(
-                          'Edit',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ],
-                ),
-              ));
+                        }
+                      },
+                    ),
+                  ]),
+      ),
+    );
   }
 
-  Future<void> _showErrorDialog(String msg, String title) {
+  Future<void> _showErrorDialog(String msg, String title, String id) {
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: Text(id),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -165,7 +164,14 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) =>
+                          AddMedicationTiming(id),
+                      fullscreenDialog: true,
+                    ),
+                  );
                 },
                 child: Text('Confirm'))
           ],
@@ -174,8 +180,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
     );
   }
 
-  //Image upload widget
-  Widget imageProfile(String elderlyImage, String name) {
+Widget imageMedication (String elderlyImage, String name) {
     return Center(
         child: Stack(
       children: <Widget>[
@@ -271,16 +276,16 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
     }
   }
 
-  Widget nameTextField(String name) {
+  Widget MedicationNameTextField(String MedicationName) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Name Cannot be empty...';
+          return 'Medication Name Cannot be empty...';
         } else {
           return null;
         }
       },
-      controller: nameContoller..text = name,
+      controller: medicationNameController..text = MedicationName,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -294,24 +299,24 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.person,
+            Icons.medical_information,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Name',
+          labelText: 'Medication Name',
           helperText: 'Name Cannot Be Empty'),
     );
   }
 
-  Widget RoomIDTextField(String roomID) {
+  Widget MedicationTypeTextField(String Type) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Room ID Cannot be empty...';
+          return 'Medication Type Cannot be empty...';
         } else {
           return null;
         }
       },
-      controller: roomNoContoller..text = roomID,
+      controller: medicationTypeController..text = Type,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -325,24 +330,24 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.house,
+            Icons.medical_information,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Room Number',
-          helperText: 'Room Number Cannot Be Empty'),
+          labelText: 'Medication Type',
+          helperText: 'Medication type Cannot Be Empty'),
     );
   }
 
-  Widget BedNoTextField(String bedID) {
+  Widget MedicationDescTextField(String desc) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Bed Number Cannot be empty...';
+          return 'Desciption Cannot be empty...';
         } else {
           return null;
         }
       },
-      controller: bedNoContoller..text = bedID,
+      controller: medicationDescriptionController..text = desc,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -356,46 +361,15 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.bed,
+            Icons.medical_information,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Bed Number',
-          helperText: 'Bed Number Cannot Be Empty'),
+          labelText: 'Description',
+          helperText: 'Description Cannot Be Empty'),
     );
   }
 
-  Widget RelativeTextField(int erID) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Bed Number Cannot be empty...';
-        } else {
-          return null;
-        }
-      },
-      controller: relativeContoller..text = erID.toString(),
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.teal,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).toggleableActiveColor,
-              width: 2,
-            ),
-          ),
-          prefixIcon: Icon(
-            Icons.bed,
-            color: Theme.of(context).primaryColor,
-          ),
-          labelText: 'Relative',
-          helperText: 'Eldery Raltive Cannot Be Empty'),
-    );
-  }
-
-  Widget DOBTextField(String dob) {
+  Widget ExpireDateTextField(String expireDate) {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
@@ -404,7 +378,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
           return null;
         }
       },
-      controller: DOBcontroller..text = dob,
+      controller: expireDateController..text = expireDate,
       readOnly: true,
       decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -422,8 +396,8 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             Icons.calendar_today,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Date of Birth',
-          helperText: 'Bed No Cannot Be Empty'),
+          labelText: 'Expired Date',
+          helperText: 'Expired Date Cannot Be Empty'),
       onTap: () async {
         DateTime? pickedDate = await showDatePicker(
             context: context,
@@ -433,22 +407,27 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
         if (pickedDate != null) {
           setState(() {
             String formatedDate = DateFormat('y-M-d').format(pickedDate);
-            DOBcontroller.text = formatedDate.toString();
+            expireDateController.text = formatedDate.toString();
           });
         } else {
           setState(() {
-            DOBcontroller.text = '';
+            expireDateController.text = '';
           });
         }
       },
     );
   }
 
-  Widget DescTextField(String desc) {
+  Widget DoseTextField(String dose) {
     return TextFormField(
-      maxLines: 4,
-      maxLength: 400,
-      controller: descContoller..text = desc,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Dose Cannot be empty...';
+        } else {
+          return null;
+        }
+      },
+      controller: doseController..text = dose,
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -462,41 +441,25 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.description,
+            Icons.numbers,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Description',
-          helperText: 'Description Cannot be Empty'),
+          labelText: 'Dose',
+          helperText: 'Dose Cannot Be Empty'),
     );
   }
 
-  Widget genderManu(String gender) {
-    String dropdownValue;
-    if (gender.isNotEmpty) {
-      dropdownValue = gender;
-    } else {
-      dropdownValue = 'Male';
-    }
-
-    return DropdownButtonFormField(
-        items: <String>['Male', 'Female']
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              style: TextStyle(fontSize: 18),
-            ),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          setState(() {
-            dropdownValue = newValue!;
-            genderSelected = newValue;
-          });
-        },
-        value: dropdownValue,
-        decoration: InputDecoration(
+  Widget QuantityTextField(String quantity) {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Quantity Cannot be empty...';
+        } else {
+          return null;
+        }
+      },
+      controller: quantityController..text = quantity,
+      decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.teal,
@@ -509,9 +472,42 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.face,
+            Icons.medical_information,
             color: Theme.of(context).primaryColor,
           ),
-        ));
+          labelText: 'Quantity',
+          helperText: 'Quantity Cannot Be Empty'),
+    );
+  }
+
+  Widget ERTextField(String erid) {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Elderly Cannot be empty...';
+        } else {
+          return null;
+        }
+      },
+      controller: elderlyIDController..text = erid,
+      decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.teal,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Theme.of(context).toggleableActiveColor,
+              width: 2,
+            ),
+          ),
+          prefixIcon: Icon(
+            Icons.medical_information,
+            color: Theme.of(context).primaryColor,
+          ),
+          labelText: 'Elderly ID',
+          helperText: 'Elderly ID Cannot Be Empty'),
+    );
   }
 }

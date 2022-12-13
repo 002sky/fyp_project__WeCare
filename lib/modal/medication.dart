@@ -4,10 +4,11 @@ class Medication {
   String type;
   String description;
   DateTime expireDate;
-  DateTime manufactureDate;
+  String dose;
+  String image;
   int quantity;
   String elderlyID;
-  List<MedicationTime> medicationTime;
+  List<MedicationTime>? medicationTime;
 
   // imgae
   //icon
@@ -18,7 +19,8 @@ class Medication {
     required this.type,
     required this.description,
     required this.expireDate,
-    required this.manufactureDate,
+    required this.dose,
+    required this.image,
     required this.quantity,
     required this.elderlyID,
     required this.medicationTime,
@@ -29,13 +31,13 @@ class Medication {
     if (json['time'].runtimeType.toString() == 'List<dynamic>') {
       Iterable list;
       list = json['time'] as List;
-      medTime =
-          list.map((i) => MedicationTime.fromJson(i)).toList();
-    } else {
-      print('help');
+      medTime = list.map((i) => MedicationTime.fromJson(i)).toList();
+    } else if (json['time'] != null) {
       var list = json['time'];
       final result = MedicationTime.fromJson(list);
       medTime.add(result);
+    } else {
+      medTime;
     }
 
     return Medication(
@@ -44,7 +46,8 @@ class Medication {
       type: json['type'],
       description: json['description'],
       expireDate: DateTime.parse(json['expireDate']),
-      manufactureDate: DateTime.parse(json['manufactureDate']),
+      dose: json['dose'],
+      image: json['image']?? '',
       quantity: int.parse(json['quantity'].toString()),
       elderlyID: json['elderlyID'].toString(),
       medicationTime: medTime,

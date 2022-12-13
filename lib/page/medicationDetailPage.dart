@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/medication.dart';
 import 'package:fyp_project_testing/page/addMedicationTiming.dart';
+import 'package:fyp_project_testing/page/editMedicationPage.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -60,6 +61,11 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           ? CircularProgressIndicator()
           : ListView(
               children: <Widget>[
+                ProfileImage(
+                    loadedMedication.first.image.isEmpty
+                        ? loadedMedication.first.name
+                        : loadedMedication.first.image,
+                    loadedMedication.first.image.isEmpty ? 2 : 1),
                 ContentDisplay(
                     "Medication Name", loadedMedication.first.medicationName),
                 Row(
@@ -81,32 +87,63 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                           loadedMedication.first.expireDate.toString()),
                     ),
                     Flexible(
-                      child: ContentDisplay('Manufacture Date',
-                          loadedMedication.first.manufactureDate.toString()),
+                      child: ContentDisplay(
+                          'Dose', loadedMedication.first.dose.toString()),
                     ),
                   ],
                 ),
                 ContentDisplay('Elderly ID', loadedMedication.first.elderlyID),
                 ContentDisplay(
                     'Description', loadedMedication.first.description),
-                OutlinedButton(
-                    style:
-                        OutlinedButton.styleFrom(backgroundColor: Colors.blue),
-                    onPressed: () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    AddMedicationTiming(
-                                        loadedMedication.first.id),
-                                fullscreenDialog: true,
-                              ))
-                        },
-                    child: Text(
-                      'Edit',
-                      style: TextStyle(color: Colors.white),
-                    )),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.blue),
+                      onPressed: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      EditMedicationPage(
+                                          loadedMedication.first.id),
+                                  fullscreenDialog: true,
+                                ))
+                          },
+                      child: Text(
+                        'Edit',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Divider(
+                    height: 2,
+                    thickness: 2,
+                    color: Colors.black,
+                  ),
+                ),
               ],
+            ),
+    );
+  }
+
+  Widget ProfileImage(String profileImage, int type) {
+    return Center(
+      child: type == 1
+          ? CircleAvatar(
+              radius: 50.0,
+              backgroundImage: MemoryImage(avatarImage(profileImage)),
+            )
+          : CircleAvatar(
+              radius: 50.0,
+              backgroundColor: Colors.white,
+              child: Text(
+                profileImage[0].toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+              ),
             ),
     );
   }

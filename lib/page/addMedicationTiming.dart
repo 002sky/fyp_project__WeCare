@@ -19,23 +19,27 @@ class AddMedicationTiming extends StatefulWidget {
 class _AddMedicationTimingState extends State<AddMedicationTiming> {
   var _isInit = true;
   var _isLoading = false;
-
+  var loadedMedication;
   @override
   void didChangeDependencies() {
     if (_isInit) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
 
       Provider.of<MedicationProvider>(context, listen: false)
-          .getMedicationData();
-
-      Provider.of<MedicationProvider>(
-        context,
-        listen: false,
-      ).getMedicationByID(widget.id).then((_) {
-        setState(() {
-          _isLoading = false;
+          .getMedicationData()
+          .then((_) {
+        Provider.of<MedicationProvider>(
+          context,
+          listen: false,
+        ).getMedicationByID(widget.id).then((_) {
+          loadedMedication =
+              Provider.of<MedicationProvider>(context, listen: false)
+                  .medicationByID;
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
     }
@@ -45,46 +49,24 @@ class _AddMedicationTimingState extends State<AddMedicationTiming> {
 
   @override
   Widget build(BuildContext context) {
-    final loadedMedication =
-        Provider.of<MedicationProvider>(context, listen: false).medicationByID;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: Text('Set Medication Timing'),
         ),
-        body: _isInit == false
-            ? ListView(
+        body: _isLoading == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(
                 children: <Widget>[
                   ContentDisplay(
                       'Medication Name', loadedMedication.first.medicationName),
                   ContentDisplay('Medication Name', loadedMedication.first.id),
                   DynamicAddForm(widget.id),
                 ],
-              )
-            : Column(
-                children: <Widget>[
-                  Text('wait'),
-                ],
               ));
   }
-
-  // Widget ProfileImage(String profileImage, int type) {
-  //   return Center(
-  //     child: type == 1
-  //         ? CircleAvatar(
-  //             radius: 50.0,
-  //             backgroundImage: MemoryImage(avatarImage(profileImage)),
-  //           )
-  //         : CircleAvatar(
-  //             radius: 50.0,
-  //             backgroundColor: Colors.white,
-  //             child: Text(
-  //               profileImage[0].toUpperCase(),
-  //               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
-  //             ),
-  //           ),
-  //   );
-  // }
 
   Widget ContentDisplay(String label, String data) {
     final display = TextEditingController();
@@ -170,17 +152,19 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
         OutlinedButton(
             onPressed: () async {
               gettingValue();
-              String data = json.encode({
-                'elderlyID': widget.id,
-                'time_status': _value,
-              });
+              if (_value.isNotEmpty) {
+                String data = json.encode({
+                  'elderlyID': widget.id,
+                  'time_status': _value,
+                });
+                Map<String, dynamic>? msg =
+                    await Provider.of<MedicationTimingProvder>(context,
+                            listen: false)
+                        .setMedicationTiming(data);
+              } else {
+               
+              }
 
-              Map<String, dynamic>? msg =
-                  await Provider.of<MedicationTimingProvder>(context,
-                          listen: false)
-                      .setMedicationTiming(data);
-
-              print(msg);
               _value.clear();
             },
             child: Text('data'))
