@@ -82,7 +82,10 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
 
                     print(data);
 
-                    Map<String, dynamic>? msg = await Provider.of<MedicationProvider>(context,listen: false).setMedication(data);
+                    Map<String, dynamic>? msg =
+                        await Provider.of<MedicationProvider>(context,
+                                listen: false)
+                            .setMedication(data);
 
                     if (msg!.isNotEmpty) {
                       _showErrorDialog(
@@ -99,7 +102,6 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
   }
 
   Future<void> _showErrorDialog(String msg, String title, String id) {
-
     return showDialog(
       barrierDismissible: false,
       context: context,
@@ -116,14 +118,18 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          AddMedicationTiming(id),
-                      fullscreenDialog: true,
-                    ),
-                  );
+                  if (title == 'Error') {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            AddMedicationTiming(id),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                  }
                 },
                 child: Text('Confirm'))
           ],
@@ -131,8 +137,6 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
       },
     );
   }
-
-  
 
   Widget imageMedication() {
     return Center(

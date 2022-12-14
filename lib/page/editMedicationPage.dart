@@ -116,6 +116,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
 
                         if (_formKey.currentState!.validate()) {
                           String data = json.encode({
+                            'id': widget.id,
                             'medicationName': medicationNameController.text,
                             'type': medicationTypeController.text,
                             'description': medicationDescriptionController.text,
@@ -131,7 +132,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                           Map<String, dynamic>? msg =
                               await Provider.of<MedicationProvider>(context,
                                       listen: false)
-                                  .setMedication(data);
+                                  .updateMedication(data);
 
                           if (msg!.isNotEmpty) {
                             _showErrorDialog(

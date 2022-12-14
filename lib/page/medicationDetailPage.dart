@@ -63,7 +63,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
               children: <Widget>[
                 ProfileImage(
                     loadedMedication.first.image.isEmpty
-                        ? loadedMedication.first.name
+                        ? loadedMedication.first.medicationName
                         : loadedMedication.first.image,
                     loadedMedication.first.image.isEmpty ? 2 : 1),
                 ContentDisplay(
@@ -125,9 +125,22 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                     color: Colors.black,
                   ),
                 ),
+                loadedMedication.first.medicationTime.isEmpty
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : MedicationTimingList(loadedMedication.first.medicationTime),
               ],
             ),
     );
+  }
+
+  Widget MedicationTimingList(List<MedicationTime> item) {
+    return ListView.builder(
+      shrinkWrap: true,
+        itemCount: item.length, itemBuilder: (context, index) {
+          return ContentDisplay( 'Time:' + index.toString(), item[index].time);
+        });
   }
 
   Widget ProfileImage(String profileImage, int type) {
