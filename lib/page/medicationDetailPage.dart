@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/medication.dart';
 import 'package:fyp_project_testing/page/addMedicationTiming.dart';
+import 'package:fyp_project_testing/page/editMedicationTimingPage.dart';
+import 'package:intl/intl.dart';
 import 'package:fyp_project_testing/page/editMedicationPage.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -126,10 +128,52 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                   ),
                 ),
                 loadedMedication.first.medicationTime.isEmpty
-                    ? Center(
-                        child: CircularProgressIndicator(),
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.blue),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        AddMedicationTiming(
+                                            loadedMedication.first.id),
+                                    fullscreenDialog: true,
+                                  ));
+                            },
+                            child: Text(
+                              'Set Timing',
+                              style: TextStyle(color: Colors.white),
+                            )),
                       )
-                    : MedicationTimingList(loadedMedication.first.medicationTime),
+                    : MedicationTimingList(
+                        loadedMedication.first.medicationTime),
+                loadedMedication.first.medicationTime.isEmpty
+                    ? Center()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.blue),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute<void>(
+                                    builder: (BuildContext context) =>
+                                        EditMedicationTiming(
+                                            loadedMedication.first.id),
+                                    fullscreenDialog: true,
+                                  ));
+                            },
+                            child: Text(
+                              'Edit Timing',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      )
               ],
             ),
     );
@@ -137,9 +181,11 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
 
   Widget MedicationTimingList(List<MedicationTime> item) {
     return ListView.builder(
-      shrinkWrap: true,
-        itemCount: item.length, itemBuilder: (context, index) {
-          return ContentDisplay( 'Time:' + index.toString(), item[index].time);
+        shrinkWrap: true,
+        itemCount: item.length,
+        itemBuilder: (context, index) {
+          int disply = index + 1;
+          return ContentDisplay('Time:' + disply.toString(), item[index].time);
         });
   }
 
@@ -177,4 +223,11 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
       ),
     );
   }
+}
+
+String formatTimeOfDay(TimeOfDay tod) {
+  final now = new DateTime.now();
+  final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+  final format = DateFormat.jm(); //"6:00 AM"
+  return format.format(dt);
 }

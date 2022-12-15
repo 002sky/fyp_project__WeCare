@@ -10,8 +10,6 @@ class Medication {
   String elderlyID;
   List<MedicationTime>? medicationTime;
 
-  // imgae
-  //icon
 
   Medication({
     required this.id,
@@ -47,7 +45,7 @@ class Medication {
       description: json['description'],
       expireDate: DateTime.parse(json['expireDate']),
       dose: json['dose'],
-      image: json['image']?? '',
+      image: json['image'] ?? '',
       quantity: int.parse(json['quantity'].toString()),
       elderlyID: json['elderlyID'].toString(),
       medicationTime: medTime,
@@ -61,6 +59,6 @@ class MedicationTime {
   MedicationTime({required this.time});
 
   factory MedicationTime.fromJson(Map<String, dynamic> json) {
-    return MedicationTime(time: json['time'] ?? '');
+    return MedicationTime(time: json['Time'] ?? '');
   }
 }

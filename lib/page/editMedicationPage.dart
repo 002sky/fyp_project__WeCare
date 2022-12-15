@@ -71,7 +71,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff5ac18e),
-        title: Text('Create Elderly profile'),
+        title: Text('Edit  Medication Page'),
       ),
       body: Form(
         key: _formKey,

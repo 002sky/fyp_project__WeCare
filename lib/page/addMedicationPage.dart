@@ -33,7 +33,7 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff5ac18e),
-        title: Text('Create Elderly profile'),
+        title: Text('Create Medication Pages'),
       ),
       body: Form(
         key: _formKey,
