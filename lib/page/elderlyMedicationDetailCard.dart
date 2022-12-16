@@ -14,7 +14,6 @@ class ElderlyMedicationDetailCard extends StatefulWidget {
 
 class _ElderlyMedicationDetailCardState
     extends State<ElderlyMedicationDetailCard> {
-  var id;
   var _isInit = true;
   var _isLoading = false;
 
@@ -32,10 +31,13 @@ class _ElderlyMedicationDetailCardState
         listen: false,
       ).getMedicationData().then((_) {
         Provider.of<MedicationProvider>(context, listen: false)
-            .getMedicationByElderly(widget.id);
+            .getMedicationByElderly(widget.id)
+            .then((_) {
+          medicatinobyID =
+              Provider.of<MedicationProvider>(context, listen: false)
+                  .medicationByElderlyID;
+        });
 
-        medicatinobyID = Provider.of<MedicationProvider>(context, listen: false)
-            .medicationByID;
         setState(() {
           _isLoading = false;
         });
@@ -57,12 +59,12 @@ class _ElderlyMedicationDetailCardState
 
   Widget MedicationListView() {
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         itemCount: medicatinobyID.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title:Text( medicatinobyID[index].medicationName),
+            title: Text(medicatinobyID[index].medicationName),
           );
         });
   }

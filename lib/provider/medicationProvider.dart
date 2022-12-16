@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 class MedicationProvider extends ChangeNotifier {
   List<Medication>? _medication = [];
   List<Medication>? _MedicationByID = [];
+  List<Medication>? _MedicationByElderlyID = [];
+
 
   bool _isloading = false;
 
@@ -17,6 +19,9 @@ class MedicationProvider extends ChangeNotifier {
     return [...?_medication];
   }
 
+  List<Medication> get medicationByElderlyID {
+    return [...?_MedicationByElderlyID];
+  }
   List<Medication> get medicationByID {
     return [...?_MedicationByID];
   }
@@ -70,7 +75,7 @@ class MedicationProvider extends ChangeNotifier {
         var Findid = medication.where((element) => element.elderlyID == id);
         if (Findid.isNotEmpty) {
           loadedMedicationByID = Findid.toList();
-          _MedicationByID = loadedMedicationByID;
+          _MedicationByElderlyID = loadedMedicationByID;
         }
       } catch (e) {
         print(e);

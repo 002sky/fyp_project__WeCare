@@ -168,16 +168,16 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
             onPressed: () async {
               gettingValue();
               print(_value);
-              // if (_value.isNotEmpty) {
-              //   String data = json.encode({
-              //     'elderlyID': widget.id,
-              //     'time_status': _value,
-              //   });
-              //   Map<String, dynamic>? msg =
-              //       await Provider.of<MedicationTimingProvder>(context,
-              //               listen: false)
-              //           .setMedicationTiming(data);
-              // } else {}
+              if (_value.isNotEmpty) {
+                String data = json.encode({
+                  'medicationID': widget.id,
+                  'time_status': _value,
+                });
+                Map<String, dynamic>? msg =
+                    await Provider.of<MedicationTimingProvder>(context,
+                            listen: false)
+                        .EditMedicationTiming(data);
+              } else {}
 
               _value.clear();
             },

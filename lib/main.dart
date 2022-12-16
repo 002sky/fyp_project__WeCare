@@ -3,6 +3,7 @@ import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
 import 'package:fyp_project_testing/provider/notificationProvider.dart';
 import 'package:fyp_project_testing/provider/scheduleProvider.dart';
+import 'package:fyp_project_testing/provider/statusReportProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/auth.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
         ),
                 ChangeNotifierProvider(
           create: ((context) => notificationProvider()),
+        ),
+         ChangeNotifierProvider(
+          create: ((context) => StatusReportProvider()),
         ),
       ],
       child: Consumer<Auth>(

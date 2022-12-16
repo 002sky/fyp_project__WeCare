@@ -154,7 +154,7 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
               gettingValue();
               if (_value.isNotEmpty) {
                 String data = json.encode({
-                  'elderlyID': widget.id,
+                  'medicationID': widget.id,
                   'time_status': _value,
                 });
                 Map<String, dynamic>? msg =
