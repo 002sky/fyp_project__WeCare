@@ -27,77 +27,96 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
       body: Container(
         margin: EdgeInsets.all(10),
         child: FormBuilder(
-          child: Column(
+          child: ListView(
             children: [
-              Align(
-                child: Text('Add Schedule'),
-                alignment: Alignment.center,
-              ),
-              SizedBox(height: 10),
-              Align(
-                child: Text('Schedule Title',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
               FormBuilderTextField(
                 name: 'ScheduleTitle',
                 controller: tileController,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.teal,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).toggleableActiveColor,
+                        width: 2,
+                      ),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.title,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    labelText: 'Title',
+                    helperText: 'Title Cannot Be Empty'),
               ),
               SizedBox(height: 10),
-              Align(
-                child: Text('Start Time',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
               FormBuilderDateTimePicker(
                 name: 'StartTime',
                 onChanged: (val) {
                   startTime = val!;
                 },
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.teal,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).toggleableActiveColor,
+                        width: 2,
+                      ),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.schedule,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    labelText: 'Start Time',
+                    helperText: 'Start Time Cannot Be Empty'),
               ),
               SizedBox(height: 10),
-              Align(
-                child: Text('End Time',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
-              ),
               FormBuilderDateTimePicker(
                 name: 'EndTime',
                 onChanged: (val) {
                   endTime = val!;
                 },
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.teal,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context).toggleableActiveColor,
+                        width: 2,
+                      ),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.schedule,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    labelText: 'End Time',
+                    helperText: 'End Time Cannot Be Empty'),
               ),
               SizedBox(height: 10),
-              Align(
-                child: Text('Color',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                alignment: Alignment.centerLeft,
+              Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      String data = json.encode({
+                        'eventName': tileController.text,
+                        'start_time': startTime.toString(),
+                        'end_time': endTime.toString(),
+                        'userID':
+                            Provider.of<Auth>(context, listen: false).userID,
+                        'color_display': 'green'
+                      });
+                      addScheduleData(data);
+                    },
+                    child: Text('Save')),
               ),
-              FormBuilderColorPickerField(
-                name: 'Color',
-                colorPickerType: ColorPickerType.materialPicker,
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                      onPressed: () {
-              
-                        String data = json.encode({
-                          'eventName': tileController.text,
-                          'start_time': startTime.toString(),
-                          'end_time': endTime.toString(),
-                          'userID': Provider.of<Auth>(context,listen: false).userID,
-                          'color_display': 'green'
-                        });
-                        addScheduleData(data);
-                      },
-                      child: Text('button')),
-                ],
-              )
             ],
           ),
         ),

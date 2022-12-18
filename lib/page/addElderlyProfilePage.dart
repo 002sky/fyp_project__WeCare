@@ -90,7 +90,6 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                         _showErrorDialog(msg['message'].toString(),
                             msg['success'] != true ? 'Error' : 'Message');
                       }
-                      Navigator.of(context).popUntil((route) => route.isFirst);
                     }
                   },
                   child: Text(
@@ -122,7 +121,11 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (title == 'Error') {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
                 },
                 child: Text('Confirm'))
           ],

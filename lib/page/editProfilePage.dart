@@ -164,8 +164,14 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
           ),
           actions: [
             TextButton(
+                
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if(title == 'Error'){
+                    Navigator.of(context).pop();
+                  }else{
+                     Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                  
                 },
                 child: Text('Confirm'))
           ],

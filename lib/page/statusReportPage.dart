@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/provider/statusReportProvider.dart';
 import 'package:provider/provider.dart';
 
+import '../component/statusReportCard.dart';
+
 class StatusReportPage extends StatefulWidget {
   const StatusReportPage({super.key});
 
@@ -14,6 +16,7 @@ class _StatusReportPageState extends State<StatusReportPage> {
   var _isLoading = false;
 
   late Map<String, dynamic> totalReport;
+  late List<Map<String, dynamic>> incompleteList;
 
   @override
   void didChangeDependencies() {
@@ -28,11 +31,28 @@ class _StatusReportPageState extends State<StatusReportPage> {
         totalReport = Provider.of<StatusReportProvider>(context, listen: false)
             .reportTotal;
 
-        setState(() {
-          _isLoading = false;
+        Provider.of<StatusReportProvider>(context, listen: false)
+            .getStatusReport()
+            .then((_) {
+          incompleteList =
+              Provider.of<StatusReportProvider>(context, listen: false)
+                  .reportStatus;
+
+          if (totalReport.isEmpty) {
+            totalReport = {
+              'currentComplete': 0,
+              'imcomplete': 0,
+              'totalElderly': 0,
+            };
+            
+          }
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
     }
+    _isInit = false;
     super.didChangeDependencies();
   }
 
@@ -44,10 +64,8 @@ class _StatusReportPageState extends State<StatusReportPage> {
               child: CircularProgressIndicator(),
             )
           : Container(
-              height: 300,
-              width: 500,
               margin: EdgeInsets.all(10),
-              child: Column(
+              child: ListView(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,14 +160,24 @@ class _StatusReportPageState extends State<StatusReportPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  // Expanded(
-                  //     child: ListView.builder(
-                  //   itemCount: dummy_report.length,
-                  //   itemBuilder: (context, index) {
-                  //     return StatusReportCard(StatusReport[index].name,
-                  //         StatusReport[index].image, StatusReport[index].Status);
-                  //   },
-                  // ))
+                  incompleteList.isEmpty
+                      ? Center(
+                          child: Text(
+                              'The Statue report have be written for this months'),
+                        )
+                      : Center(
+                          child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: incompleteList.length,
+                          itemBuilder: (context, index) {
+                            return StatusReportCard(
+                                incompleteList[index]['name'],
+                                incompleteList[index]['reportStatus']
+                                    .toString(),
+                                incompleteList[index]['id'].toString());
+                          },
+                        ))
                 ],
               ),
             ),

@@ -89,7 +89,6 @@ class MedicationProvider extends ChangeNotifier {
     'success': false,
     'message': 'Something went wrong'
   };
-
   final url = Uri.parse(databaseURL() + 'api/admin/updateMedication');
 
   try {

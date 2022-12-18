@@ -61,7 +61,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
     ;
   }
 
-    Uint8List avatarImage(String img) {
+  Uint8List avatarImage(String img) {
     Uint8List bytes = base64.decode(img);
     return bytes;
   }
@@ -83,7 +83,8 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 children: <Widget>[
-                    imageMedication(loadedMedication.first.image, loadedMedication.first.medicationName),
+                    imageMedication(loadedMedication.first.image,
+                        loadedMedication.first.medicationName),
                     SizedBox(height: 20),
                     MedicationNameTextField(
                         loadedMedication.first.medicationName),
@@ -127,18 +128,14 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                             'elderlyID': elderlyIDController.text,
                           });
 
-                          print(data);
-
                           Map<String, dynamic>? msg =
                               await Provider.of<MedicationProvider>(context,
                                       listen: false)
                                   .updateMedication(data);
 
                           if (msg!.isNotEmpty) {
-                            _showErrorDialog(
-                                msg['message'],
-                                msg['success'] != true ? 'Error' : 'Message',
-                                msg['ID'].toString());
+                            _showErrorDialog(msg['message'],
+                                msg['success'] != true ? 'Error' : 'Message');
                           }
                         }
                       },
@@ -148,13 +145,13 @@ class _EditMedicationPage extends State<EditMedicationPage> {
     );
   }
 
-  Future<void> _showErrorDialog(String msg, String title, String id) {
+  Future<void> _showErrorDialog(String msg, String title) {
     return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(id),
+          title: Text(title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -165,14 +162,11 @@ class _EditMedicationPage extends State<EditMedicationPage> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          AddMedicationTiming(id),
-                      fullscreenDialog: true,
-                    ),
-                  );
+                  if (title == 'Error') {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
                 },
                 child: Text('Confirm'))
           ],
@@ -181,7 +175,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
     );
   }
 
-Widget imageMedication (String elderlyImage, String name) {
+  Widget imageMedication(String elderlyImage, String name) {
     return Center(
         child: Stack(
       children: <Widget>[

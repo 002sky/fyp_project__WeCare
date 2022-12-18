@@ -159,6 +159,7 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
           ),
         ),
         ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             shrinkWrap: true,
             itemCount: _generating.length,
             itemBuilder: (context, index) {
@@ -177,12 +178,47 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
                     await Provider.of<MedicationTimingProvder>(context,
                             listen: false)
                         .EditMedicationTiming(data);
+
+                if (msg!.isNotEmpty) {
+                  _showErrorDialog(msg['message'].toString(),
+                      msg['success'] != true ? 'Error' : 'Message');
+                }
               } else {}
 
               _value.clear();
             },
-            child: Text('data'))
+            child: Text('Update'))
       ],
+    );
+  }
+
+  Future<void> _showErrorDialog(String msg, String title) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  if (title == 'Error') {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                },
+                child: Text('Confirm'))
+          ],
+        );
+      },
     );
   }
 

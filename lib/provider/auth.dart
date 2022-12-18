@@ -31,7 +31,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<String?> authentication(String email, String password) async {
-        
     final url = Uri.parse(databaseURL().toString() + 'api/auth/login');
 
     try {
@@ -40,11 +39,9 @@ class Auth with ChangeNotifier {
             'email': email,
             'password': password,
           }),
-          headers: _setHeader()
-      );
+          headers: _setHeader());
 
       if (response.statusCode == 401) {
-
         return response.body;
       }
       final responseData = json.decode(response.body);
@@ -71,14 +68,11 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  // Future<void> login(String email, String password) async {
-  //   return _authentication(email, password, 'login');
-  // }
-
   Future<void> logout() async {
     final url = Uri.parse(databaseURL().toString() + 'api/auth/logout');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? id = localStorage.getString('user');
+
     String? token = localStorage.getString('token');
     try {
       final response = await http.get(
@@ -92,6 +86,7 @@ class Auth with ChangeNotifier {
 
       final data = json.decode(response.body);
       print(data);
+      print(_token);
       notifyListeners();
       // _token = responseDate['token'];
 

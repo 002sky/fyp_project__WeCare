@@ -63,7 +63,6 @@ class ProfileCard extends StatelessWidget {
                 )
               : CircleAvatar(
                 backgroundImage: MemoryImage(avatarImage(elderlyImage)),
-
                 ),
           // child: Text(bedID),
         ),
