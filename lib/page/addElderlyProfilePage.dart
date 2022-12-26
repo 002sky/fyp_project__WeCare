@@ -413,8 +413,8 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             Icons.description,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Description',
-          helperText: 'Description Cannot be Empty'),
+          labelText: 'Attentions note',
+          helperText: 'Enter condition, symptom, of the elderly'),
     );
   }
 

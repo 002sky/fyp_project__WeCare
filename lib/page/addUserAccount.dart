@@ -83,7 +83,10 @@ class _AddUserAccountState extends State<AddUserAccount> {
                   }
                 }
               },
-              child: Text('Save'),
+              child: Text(
+                'Save',
+                style: TextStyle(color: Colors.white),
+              ),
             )
           ],
         ),

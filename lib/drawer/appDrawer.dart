@@ -3,6 +3,7 @@ import 'package:fyp_project_testing/main.dart';
 import 'package:fyp_project_testing/page/addUserAccount.dart';
 import 'package:fyp_project_testing/page/authPage.dart';
 import 'package:fyp_project_testing/page/mainPage.dart';
+import 'package:fyp_project_testing/page/overViewPage.dart';
 
 import 'package:fyp_project_testing/provider/auth.dart';
 
@@ -42,8 +43,15 @@ class AppDrawer extends StatelessWidget {
                     ),
                   );
                 }),
-                DrawerListTile(
-                    Icons.document_scanner, 'Status Report', () => {}),
+                DrawerListTile(Icons.document_scanner, 'Overview', () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => OverViewPage(),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                }),
               ]),
             ),
             Container(

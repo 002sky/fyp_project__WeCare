@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/page/relativeMainPage.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
 import 'package:fyp_project_testing/provider/notificationProvider.dart';
+import 'package:fyp_project_testing/provider/overviewProvider.dart';
 import 'package:fyp_project_testing/provider/scheduleProvider.dart';
 import 'package:fyp_project_testing/provider/statusReportProvider.dart';
 import 'package:fyp_project_testing/provider/userProvider.dart';
@@ -44,6 +46,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: ((context) => UserProvider()),
         ),
+        ChangeNotifierProvider(
+          create: ((context) => OverViewProvider()),
+        ),
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
@@ -63,7 +68,9 @@ class MyApp extends StatelessWidget {
                     fontSize: 16,
                   ))),
           home: auth.isAuth
-              ? MainPage()
+              ? auth.isAdmin
+                  ? MainPage()
+                  : RelativeMainPage()
               : FutureBuilder(
                   builder: (context, authResultSnpshot) =>
                       authResultSnpshot.connectionState ==
@@ -71,9 +78,7 @@ class MyApp extends StatelessWidget {
                           ? CircularProgressIndicator()
                           : AuthPage(),
                 ),
-          routes: {
-            
-          },
+          routes: {},
         ),
       ),
     );

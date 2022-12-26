@@ -37,21 +37,6 @@ Future<List<ProfileDetail>> fetchProfileDetail() async {
   return resultList;
 }
 
-Map<String, dynamic> parseJson(String response) {
-  return walkJson(json.decode(response));
-}
-
-Map<String, dynamic> walkJson(data) {
-  data.forEach((key, value) {
-    if (value is List == false) {
-      data[key] = base64Decode(value);
-    } else {
-      value.forEach((item) => item = walkJson(item));
-    }
-  });
-
-  return data;
-}
 
 Future<List<ProfileDetail>> fetchProfileDetailByID(String id) async {
   List<ProfileDetail>? resultProfile = [];
