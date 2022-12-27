@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../drawer/appDrawer.dart';
+import '../provider/auth.dart';
 
 class RelativeMainPage extends StatefulWidget {
   const RelativeMainPage({super.key});
@@ -8,6 +13,8 @@ class RelativeMainPage extends StatefulWidget {
 }
 
 class _RelativeMainPageState extends State<RelativeMainPage> {
+  bool userType = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +23,7 @@ class _RelativeMainPageState extends State<RelativeMainPage> {
           backgroundColor: Theme.of(context).primaryColor,
           title: Text('WeCare'),
         ),
+        drawer: AppDrawer(),
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           children: [
@@ -32,7 +40,6 @@ class _RelativeMainPageState extends State<RelativeMainPage> {
               trailing: Icon(Icons.open_in_full),
               onTap: () {},
             ),
-
           ],
         ));
   }

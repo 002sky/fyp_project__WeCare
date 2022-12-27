@@ -7,9 +7,11 @@ import 'package:fyp_project_testing/page/notificationMainPage.dart';
 import 'package:fyp_project_testing/page/profileMainPage.dart';
 import 'package:fyp_project_testing/page/scheduleMainPage.dart';
 import 'package:fyp_project_testing/page/statusReportPage.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../drawer/appDrawer.dart';
+import '../provider/auth.dart';
 
 class MainPage extends StatefulWidget {
   static const routeName = "/MainPageRoute";
@@ -20,7 +22,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   int _index = 4;
-  String name ='';
+  bool name = true;
 
   PageController _pageController = PageController();
   List<Widget> _screen = [
@@ -41,22 +43,7 @@ class _MainPage extends State<MainPage> {
     _pageController.jumpToPage(SelectedItem);
   }
 
-  @override
-  void initState() {
-    _loadUserData();
-    super.initState();
-  }
 
-  _loadUserData() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    String? token = localStorage.getString('token');
-
-    if (token != null) {
-      setState(() {
-        name = token;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +60,6 @@ class _MainPage extends State<MainPage> {
         onPageChanged: _onPageChange,
         physics: NeverScrollableScrollPhysics(),
       ),
-
-
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Theme.of(context).primaryColor,
@@ -84,7 +69,6 @@ class _MainPage extends State<MainPage> {
         unselectedFontSize: 12,
         currentIndex: _index,
         onTap: _onItemTapped,
-        
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Elderly'),
           BottomNavigationBarItem(

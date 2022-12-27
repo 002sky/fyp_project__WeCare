@@ -37,7 +37,7 @@ class _OverViewPageState extends State<OverViewPage> {
     }
     _isInit = false;
     super.didChangeDependencies();
-    ;
+    
   }
 
   @override

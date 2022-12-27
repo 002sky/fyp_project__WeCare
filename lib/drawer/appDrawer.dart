@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/main.dart';
+import 'package:fyp_project_testing/page/MessageBoxMainPage.dart';
 import 'package:fyp_project_testing/page/addUserAccount.dart';
-import 'package:fyp_project_testing/page/authPage.dart';
-import 'package:fyp_project_testing/page/mainPage.dart';
 import 'package:fyp_project_testing/page/overViewPage.dart';
 
 import 'package:fyp_project_testing/provider/auth.dart';
+import 'package:provider/provider.dart';
 
 import 'drawerListTile.dart';
 import 'logoutButton.dart';
 
 class AppDrawer extends StatelessWidget {
+  
+  
+
   @override
   Widget build(BuildContext context) {
+    bool usertype = Provider.of<Auth>(context, listen: false).isAdmin;
+
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
@@ -32,28 +37,54 @@ class AppDrawer extends StatelessWidget {
               'WeCare',
               style: TextStyle(fontSize: 40),
             )),
-            Expanded(
-              child: Column(children: <Widget>[
-                DrawerListTile(Icons.person, 'Elderly Relative Profile', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => AddUserAccount(),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                }),
-                DrawerListTile(Icons.document_scanner, 'Overview', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => OverViewPage(),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                }),
-              ]),
-            ),
+            usertype
+                ? Expanded(
+                    child: Column(children: <Widget>[
+                      DrawerListTile(Icons.person, 'Elderly Relative Profile',
+                          () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => AddUserAccount(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                      DrawerListTile(Icons.document_scanner, 'Overview', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => OverViewPage(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                      DrawerListTile(Icons.person, 'Message Box', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                MessageBoxMainPage(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                    ]),
+                  )
+                : Expanded(
+                    child: Column(children: <Widget>[
+                      DrawerListTile(Icons.person, 'Message Box', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                MessageBoxMainPage(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                    ]),
+                  ),
             Container(
                 child: Align(
                     alignment: FractionalOffset.bottomCenter,

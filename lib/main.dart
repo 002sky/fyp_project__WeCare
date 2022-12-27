@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/page/relativeMainPage.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
+import 'package:fyp_project_testing/provider/messageProvider.dart';
 import 'package:fyp_project_testing/provider/notificationProvider.dart';
 import 'package:fyp_project_testing/provider/overviewProvider.dart';
 import 'package:fyp_project_testing/provider/scheduleProvider.dart';
@@ -48,6 +49,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: ((context) => OverViewProvider()),
+        ),
+        ChangeNotifierProvider(
+          create: ((context) => MessageProvider()),
         ),
       ],
       child: Consumer<Auth>(
