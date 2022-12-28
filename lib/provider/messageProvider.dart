@@ -10,6 +10,7 @@ import '../modal/messageBox.dart';
 class MessageProvider extends ChangeNotifier {
   List<MessageBox>? _message = [];
   List<Map<String, dynamic>>? _listOfReceiver = [];
+
   List<MessageBox>? get message {
     return [...?_message];
   }
@@ -41,6 +42,35 @@ class MessageProvider extends ChangeNotifier {
     } catch (e) {}
 
     _listOfReceiver = resultList;
+    notifyListeners();
+  }
+
+  getAllMessage(int sender, int receiver) async {
+    List<MessageBox> resultList = [];
+    MessageBox result;
+
+    final url = Uri.parse(databaseURL() + 'api/All/getAllMessage');
+
+    String data = jsonEncode({
+      'senderId': sender,
+      'receiverID': receiver,
+    });
+
+    try {
+      final response = await http.post(url, body: data, headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      });
+      if (response.statusCode == 200) {
+        final messageList = json.decode(response.body);
+        for (var item in messageList) {
+          for (var sc in item) {
+            result = MessageBox.fromJson(sc);
+            resultList.add(result);
+          }
+        }
+      }
+    } catch (e) {}
+    _message = resultList;
     notifyListeners();
   }
 }

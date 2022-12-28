@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/page/MessageBoxPage.dart';
 import 'package:fyp_project_testing/provider/auth.dart';
 import 'package:fyp_project_testing/provider/messageProvider.dart';
 import 'package:provider/provider.dart';
@@ -64,22 +65,35 @@ class _MessageBoxMainPageState extends State<MessageBoxMainPage> {
               });
             },
           ),
-          SizedBox(
-            height: 10,
-          ),
+
           ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: listOfReceiver!.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.black, width: 1),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  title: Text(listOfReceiver![index]['name'].toString()),
-                  leading: Text(listOfReceiver![index]['id'].toString()),
-                  trailing: Icon(Icons.message),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      title: Text(listOfReceiver![index]['name'].toString()),
+                      leading: Text(listOfReceiver![index]['id'].toString()),
+                      trailing: IconButton(
+                        icon: Icon(Icons.message_outlined),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) => MessageBoxPage(
+                                  listOfReceiver![index]['name'].toString(),
+                                  listOfReceiver![index]['id']),
+                              fullscreenDialog: true,
+                            ),
+                          );
+                        },
+                      )),
                 );
               })
         ],

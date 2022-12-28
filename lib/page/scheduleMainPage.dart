@@ -21,12 +21,12 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
   void didChangeDependencies() {
     if (_isInit) {
 
-      String? id = Provider.of<Auth>(context, listen: false).userID;
+      int? id = Provider.of<Auth>(context, listen: false).userID;
 
       Provider.of<ScheduleProvider>(
         context,
         listen: false,
-      ).getScheduleData(id!).then((_) {
+      ).getScheduleData(id.toString()).then((_) {
 
       });
     }

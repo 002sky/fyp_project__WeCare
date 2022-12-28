@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   var _token = "";
-  String _userId = "";
+  late int _userId;
   bool _isAdmin = false;
 
   bool get isAdmin {
@@ -26,7 +26,7 @@ class Auth with ChangeNotifier {
     return null;
   }
 
-  String? get userID {
+  int? get userID {
     return _userId;
   }
 
@@ -50,7 +50,7 @@ class Auth with ChangeNotifier {
       var user = id.values.toList();
       var userToken = token.values.toList();
       _token = userToken[0].toString();
-      _userId = user[0].toString();
+      _userId = user[0];
 
       if (user[5].toString() == 'is_admin') {
         _isAdmin = true;
@@ -58,7 +58,7 @@ class Auth with ChangeNotifier {
 
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', _token);
-      localStorage.setString('user', _userId);
+
 
       notifyListeners();
     } catch (eror) {
