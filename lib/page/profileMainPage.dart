@@ -5,66 +5,24 @@ import 'package:fyp_project_testing/page/addElderlyProfilePage.dart';
 import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:provider/provider.dart';
 
-class ProfileMainPage extends StatelessWidget {
-  static const routeName = "/profileMainPage";
-  // List<Profile> elderprofile = dummy_profile.toList();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          margin: EdgeInsets.all(10),
-          child: Column(children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Elderly Profile',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            SizedBox(height: 4),
-            ProfileCareList(),
-          ])),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(Icons.add),
-        onPressed: () => {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) => AddElderlyProfilePage(),
-                fullscreenDialog: true,
-              ))
-        },
-      ),
-    );
-  }
-}
+import '../modal/profileDetail.dart';
 
-class ProfileCareList extends StatefulWidget {
-  const ProfileCareList({Key? key}) : super(key: key);
+class ProfileMainPage extends StatefulWidget {
+  const ProfileMainPage({super.key});
 
   @override
-  State<ProfileCareList> createState() => _ProfileCareListState();
+  State<ProfileMainPage> createState() => _ProfileMainPageState();
 }
 
-class _ProfileCareListState extends State<ProfileCareList> {
+class _ProfileMainPageState extends State<ProfileMainPage> {
   var _isInit = true;
   var _isLoading = false;
-  late final postD;
+   List<ProfileDetail> postD = [];
+  String _searchTerm = '';
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    
-    super.initState();
   }
 
   @override
@@ -90,27 +48,74 @@ class _ProfileCareListState extends State<ProfileCareList> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading == true
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Expanded(
-            child: ListView.builder(
-            itemCount: postD.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-                child: ProfileCard(
-                    postD[index].name,
-                    postD[index].DOB,
-                    postD[index].bedID,
-                    postD[index].gender,
-                    postD[index].desc,
-                    postD[index].elderlyImage,
-                    postD[index].id),
-              );
-            },
-        )
-        );
+    return Scaffold(
+      body: Container(
+          margin: EdgeInsets.all(10),
+          child: ListView(children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Elderly Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            SizedBox(height: 3,),
+            TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search...',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                // Perform search action here
+                setState(() {
+                  _searchTerm = value;
+                });
+              },
+            ),
+            _isLoading == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: postD.length,
+                    itemBuilder: (context, index) { 
+                      final item = postD[index].name;
+                      if (item.contains(_searchTerm)) {
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+                          child: ProfileCard(
+                              postD[index].name,
+                              postD[index].DOB,
+                              postD[index].bedID,
+                              postD[index].gender,
+                              postD[index].desc,
+                              postD[index].elderlyImage,
+                              postD[index].id),
+                        );
+                      }
+                      return Container();
+                    },
+                  )),
+          ])),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add),
+        onPressed: () => {
+          Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => AddElderlyProfilePage(),
+                fullscreenDialog: true,
+              ))
+        },
+      ),
+    );
   }
 }

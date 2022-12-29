@@ -65,36 +65,41 @@ class _MessageBoxMainPageState extends State<MessageBoxMainPage> {
               });
             },
           ),
-
           ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: listOfReceiver!.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black, width: 1),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      title: Text(listOfReceiver![index]['name'].toString()),
-                      leading: Text(listOfReceiver![index]['id'].toString()),
-                      trailing: IconButton(
-                        icon: Icon(Icons.message_outlined),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) => MessageBoxPage(
-                                  listOfReceiver![index]['name'].toString(),
-                                  listOfReceiver![index]['id']),
-                              fullscreenDialog: true,
-                            ),
-                          );
-                        },
-                      )),
-                );
+                final item = listOfReceiver![index]['name'];
+                if (item.contains(_searchTerm)) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.black, width: 1),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        title: Text(listOfReceiver![index]['name'].toString()),
+                        leading: Text(listOfReceiver![index]['id'].toString()),
+                        trailing: IconButton(
+                          icon: Icon(Icons.message_outlined),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    MessageBoxPage(
+                                        listOfReceiver![index]['name']
+                                            .toString(),
+                                        listOfReceiver![index]['id']),
+                                fullscreenDialog: true,
+                              ),
+                            );
+                          },
+                        )),
+                  );
+                }
+                return Container();
               })
         ],
       ),

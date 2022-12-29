@@ -1,10 +1,14 @@
-
-
 class Report {
-  final String id;
-  final String name;
-  final String image;
-  final String Status;
+  String name;
+  String report;
+  String writtenTime;
 
-  const Report({required this.id,required this.name, required this.Status,required this.image});
+  Report({required this.name, required this.report, required this.writtenTime});
+
+  factory Report.fromJson(Map<String, dynamic> json) {
+    return Report(
+        name: json['name'],
+        report: json['report'],
+        writtenTime: json['writtenTime']);
+  }
 }

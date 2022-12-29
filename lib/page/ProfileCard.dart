@@ -28,7 +28,7 @@ class ProfileCard extends StatelessWidget {
     }
   }
 
-  Uint8List avatarImage(String img){
+  Uint8List avatarImage(String img) {
     Uint8List bytes = base64.decode(img);
     return bytes;
   }
@@ -36,7 +36,7 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        minVerticalPadding:10,
+        minVerticalPadding: 10,
         onTap: () => {
               Navigator.push(
                 context,
@@ -62,7 +62,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                 )
               : CircleAvatar(
-                backgroundImage: MemoryImage(avatarImage(elderlyImage)),
+                  backgroundImage: MemoryImage(avatarImage(elderlyImage)),
                 ),
           // child: Text(bedID),
         ),
@@ -85,24 +85,9 @@ class ProfileCard extends StatelessWidget {
         subtitle: Container(
           margin: EdgeInsets.only(top: 5),
           padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [Text(desc)],
-              ),
-              Row(
-                children: [
-                  OutlinedButton(
-                    onPressed: () => {},
-                    child: Text('Medication'),
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)))),
-                  ),
-                ],
-              )
-            ],
+          child: Text(
+            desc,
+            overflow: TextOverflow.clip,
           ),
         ));
   }

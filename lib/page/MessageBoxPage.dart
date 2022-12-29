@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/messageBox.dart';
 import 'package:fyp_project_testing/provider/messageProvider.dart';
@@ -58,45 +60,66 @@ class _MessageBoxPageState extends State<MessageBoxPage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(widget.name),
       ),
-      body: Column(
-        children: <Widget>[
-          _isLoading == false
-              ? _messageList != null
-                  ? Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
-                        itemCount: _messageList!.length,
-                        itemBuilder: (context, index) {
-                          return Align(
-                            alignment: _messageList![index].senderID == senderID
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Flexible(
-                              fit: FlexFit.tight,
-                              child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(4.0),
-                                ),
-                                child: Text(
-                                  _messageList![index].messageText,
-                                  style: TextStyle(color: Colors.black),
+      body: Consumer<MessageProvider>(builder: (context, provider, child) {
+        return Column(
+          children: <Widget>[
+            _isLoading == false
+                ? provider.message != null
+                    ? Flexible(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          itemCount: provider.message!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Align(
+                                alignment: provider.message![index].senderID ==
+                                        senderID
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.green, width: 2),
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                  child: Text(
+                                    provider.message![index].messageText,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  : Expanded(
-                      child: Container(),
-                    )
-              : Expanded(child: Center(child: CircularProgressIndicator())),
-          MessageBoxWidget(onSubmitted: (value) {}),
-        ],
-      ),
+                            );
+                          },
+                        ),
+                      )
+                    : Flexible(
+                        child: Container(),
+                      )
+                : Flexible(child: Center(child: CircularProgressIndicator())),
+            MessageBoxWidget(onSubmitted: (value) async {
+              String data = json.encode({
+                'senderID': senderID,
+                'receiverID': receiverID,
+                'message': value,
+              });
+
+              bool success =
+                  await Provider.of<MessageProvider>(context, listen: false)
+                      .sendMessage(data);
+
+              if (success == true) {
+                Provider.of<MessageProvider>(context, listen: false)
+                    .getAllMessage(senderID, receiverID);
+              }
+
+              print(data);
+            }),
+          ],
+        );
+      }),
     );
   }
 }

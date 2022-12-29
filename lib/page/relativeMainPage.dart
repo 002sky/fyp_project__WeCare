@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/page/relativeStatusReportPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,22 +25,79 @@ class _RelativeMainPageState extends State<RelativeMainPage> {
           title: Text('WeCare'),
         ),
         drawer: AppDrawer(),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          children: [
-            ListTile(
-              title: Text('Appointment'),
-              trailing: Icon(Icons.open_in_full),
-              onTap: () {},
+        body: GridView(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+          ),
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                print('Container tapped');
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.green,
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.schedule,
+                          size: 48,
+                          color: Colors.greenAccent,
+                        ),
+                        Text(
+                          'Appointment',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            ListTile(
-              title: Text('Statu Report'),
-              trailing: Icon(Icons.open_in_full),
-              onTap: () {},
-            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => RelativeStatusRpeortPage(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  color: Colors.green,
+                  width: 2,
+                )),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.document_scanner,
+                        size: 48,
+                        color: Colors.greenAccent,
+                      ),
+                      Text(
+                        'Status Report',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ));
   }

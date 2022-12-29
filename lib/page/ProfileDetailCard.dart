@@ -79,7 +79,7 @@ class _ProfileDetailCard extends State<ProfileDetailCard> {
               ),
             ],
           ),
-          ContentDisplay('Description', loadedProfile.first.desc),
+          TextAreaDiaplay('Description', loadedProfile.first.desc),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SizedBox(
@@ -124,6 +124,30 @@ class _ProfileDetailCard extends State<ProfileDetailCard> {
     );
   }
 
+    Widget TextAreaDiaplay(String label, String data) {
+    final display = TextEditingController();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: TextFormField(
+          maxLines: 5,
+          maxLength: 400,
+          controller: display..text = data,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.teal,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).toggleableActiveColor,
+                width: 2,
+              ),
+            ),
+            labelText: 'Report',
+          )),
+    );
+  }
   Widget ContentDisplay(String label, String data) {
     final display = TextEditingController();
     return Padding(

@@ -52,7 +52,7 @@ class MessageProvider extends ChangeNotifier {
     final url = Uri.parse(databaseURL() + 'api/All/getAllMessage');
 
     String data = jsonEncode({
-      'senderId': sender,
+      'senderID': sender,
       'receiverID': receiver,
     });
 
@@ -72,5 +72,22 @@ class MessageProvider extends ChangeNotifier {
     } catch (e) {}
     _message = resultList;
     notifyListeners();
+  }
+
+  Future<bool> sendMessage(String data) async {
+    final url = Uri.parse(databaseURL() + 'api/All/sendMessage');
+
+    try {
+      final response = await http.post(url, body: data, headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 }
