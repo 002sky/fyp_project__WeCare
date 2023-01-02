@@ -221,7 +221,7 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Date of Birth Cannot be empty...';
+          return 'Time Cannot be empty...';
         } else {
           return null;
         }

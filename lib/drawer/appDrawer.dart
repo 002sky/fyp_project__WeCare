@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/main.dart';
 import 'package:fyp_project_testing/page/MessageBoxMainPage.dart';
 import 'package:fyp_project_testing/page/addUserAccount.dart';
+import 'package:fyp_project_testing/page/adminAppointment.dart';
 import 'package:fyp_project_testing/page/overViewPage.dart';
 
 import 'package:fyp_project_testing/provider/auth.dart';
@@ -11,9 +12,6 @@ import 'drawerListTile.dart';
 import 'logoutButton.dart';
 
 class AppDrawer extends StatelessWidget {
-  
-  
-
   @override
   Widget build(BuildContext context) {
     bool usertype = Provider.of<Auth>(context, listen: false).isAdmin;
@@ -65,6 +63,15 @@ class AppDrawer extends StatelessWidget {
                           MaterialPageRoute<void>(
                             builder: (BuildContext context) =>
                                 MessageBoxMainPage(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                      DrawerListTile(Icons.list, 'Appointment', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => AdminAppointment(),
                             fullscreenDialog: true,
                           ),
                         );

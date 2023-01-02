@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/page/relativeMainPage.dart';
+import 'package:fyp_project_testing/provider/appointmentProvider.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
 import 'package:fyp_project_testing/provider/messageProvider.dart';
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: ((context) => MessageProvider()),
+        ),
+                ChangeNotifierProvider(
+          create: ((context) => AppointmentProvider()),
         ),
       ],
       child: Consumer<Auth>(
