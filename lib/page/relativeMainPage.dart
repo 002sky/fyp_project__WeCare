@@ -163,7 +163,7 @@ class _RelativeMainPageState extends State<RelativeMainPage> {
                   )
                 ],
               ),
-              appointment.isNotEmpty
+              _isLoading == false
                   ? ListView.builder(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
