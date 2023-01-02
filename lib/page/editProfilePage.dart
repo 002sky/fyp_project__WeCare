@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/modal/relativeUser.dart';
 import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../modal/profileDetail.dart';
 import '../provider/profileProvider.dart';
+import '../provider/userProvider.dart';
 
 class EditElderlyProfilePage extends StatefulWidget {
   const EditElderlyProfilePage(this.id, {super.key});
@@ -29,8 +32,10 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
 
   var _isInit = true;
   var _isLoading = false;
-  var loadedProfile;
+  List<ProfileDetail> loadedProfile = [];
+  List<RelativeUser> listRelative = [];
   final _formKey = GlobalKey<FormState>();
+  String relativeSelected = '';
 
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
@@ -49,8 +54,15 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
         loadedProfile =
             Provider.of<ProfileProvider>(context, listen: false).profileByID;
 
-        setState(() {
-          _isLoading = false;
+        Provider.of<UserProvider>(context, listen: false)
+            .getAllRelative()
+            .then((_) {
+          listRelative =
+              Provider.of<UserProvider>(context, listen: false).relativeList;
+          relativeSelected = loadedProfile.first.erID.toString();
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
     }
@@ -94,7 +106,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
                     SizedBox(height: 20),
                     RoomIDTextField(loadedProfile.first.roomID),
                     SizedBox(height: 20),
-                    RelativeTextField(loadedProfile.first.erID),
+                    relativeMenu(loadedProfile.first.erID),
                     SizedBox(height: 20),
                     DescTextField(loadedProfile.first.desc),
                     SizedBox(height: 20),
@@ -125,7 +137,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
                               'bedNo': bedNoContoller.text,
                               'elderlyImage': img64.isEmpty ? null : img64,
                               'descrition': descContoller.text,
-                              'erID': relativeContoller.text,
+                              'erID': relativeSelected,
                             });
                             Map<String, dynamic>? msg =
                                 await editProfile(profileData);
@@ -164,14 +176,12 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
           ),
           actions: [
             TextButton(
-                
                 onPressed: () {
-                  if(title == 'Error'){
+                  if (title == 'Error') {
                     Navigator.of(context).pop();
-                  }else{
-                     Navigator.of(context).popUntil((route) => route.isFirst);
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   }
-                  
                 },
                 child: Text('Confirm'))
           ],
@@ -370,17 +380,17 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
     );
   }
 
-  Widget RelativeTextField(int erID) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Bed Number Cannot be empty...';
-        } else {
-          return null;
-        }
-      },
-      controller: relativeContoller..text = erID.toString(),
-      decoration: InputDecoration(
+  Widget relativeMenu(int erID) {
+    String selected = erID.toString();
+    return DropdownButtonFormField(
+        validator: (value) {
+          if (value == null) {
+            return 'please select a Relative';
+          } else {
+            return null;
+          }
+        },
+        decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.teal,
@@ -393,12 +403,23 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.bed,
+            Icons.face,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Relative',
-          helperText: 'Eldery Raltive Cannot Be Empty'),
-    );
+        ),
+        value: selected,
+        items: listRelative.map((list) {
+          return DropdownMenuItem(
+            child: Text(list.name),
+            value: list.id.toString(),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selected = value.toString();
+            relativeSelected = value.toString();
+          });
+        });
   }
 
   Widget DOBTextField(String dob) {

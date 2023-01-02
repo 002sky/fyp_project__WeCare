@@ -106,4 +106,7 @@ class Auth with ChangeNotifier {
     var token = localStorage.getString('token');
     return token;
   }
+
+
+  
 }

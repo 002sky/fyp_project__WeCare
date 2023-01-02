@@ -12,7 +12,6 @@ class MedicationProvider extends ChangeNotifier {
   List<Medication>? _MedicationByID = [];
   List<Medication>? _MedicationByElderlyID = [];
 
-
   bool _isloading = false;
 
   List<Medication> get medication {
@@ -22,6 +21,7 @@ class MedicationProvider extends ChangeNotifier {
   List<Medication> get medicationByElderlyID {
     return [...?_MedicationByElderlyID];
   }
+
   List<Medication> get medicationByID {
     return [...?_MedicationByID];
   }
@@ -67,8 +67,7 @@ class MedicationProvider extends ChangeNotifier {
 
   Future<void> getMedicationByElderly(String id) async {
     List<Medication>? loadedMedicationByID = [];
-
-    _isloading = true;
+    _MedicationByElderlyID = [];
 
     if (medication.isNotEmpty) {
       try {
@@ -84,31 +83,31 @@ class MedicationProvider extends ChangeNotifier {
     _isloading = false;
   }
 
-  Future<Map<String,dynamic>?> updateMedication(String data) async{
-        Map<String, dynamic>? responseMessage = {
-    'success': false,
-    'message': 'Something went wrong'
-  };
-  final url = Uri.parse(databaseURL() + 'api/admin/updateMedication');
+  Future<Map<String, dynamic>?> updateMedication(String data) async {
+    Map<String, dynamic>? responseMessage = {
+      'success': false,
+      'message': 'Something went wrong'
+    };
+    final url = Uri.parse(databaseURL() + 'api/admin/updateMedication');
 
-  try {
-    final response = await http.post(url, body: data, headers: {
-      HttpHeaders.contentTypeHeader: "application/json",
-    });
-    print(response.body);
-
-    if (response.statusCode == 200) {
-      responseMessage = jsonDecode(response.body);
-    } else {
+    try {
+      final response = await http.post(url, body: data, headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      });
       print(response.body);
-      
-      return responseMessage;
-    }
-  } catch (e) {
-    print(e);
-  }
 
-  return responseMessage;
+      if (response.statusCode == 200) {
+        responseMessage = jsonDecode(response.body);
+      } else {
+        print(response.body);
+
+        return responseMessage;
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return responseMessage;
   }
 }
 
@@ -158,7 +157,7 @@ Future<Map<String, dynamic>?> setMedicationData(String data) async {
       responseMessage = jsonDecode(response.body);
     } else {
       print(response.body);
-      
+
       return responseMessage;
     }
   } catch (e) {

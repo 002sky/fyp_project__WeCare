@@ -13,21 +13,27 @@ class ScheduleMainPage extends StatefulWidget {
 
 class _ScheduleMainPageState extends State<ScheduleMainPage> {
   var _isInit = true;
+  var _isLoading = false;
+  final CalendarController _controller = CalendarController();
 
-
-
-
+  List<Schedule> _listSchedule = [];
   @override
   void didChangeDependencies() {
     if (_isInit) {
-
+      setState(() {
+        _isLoading = true;
+      });
       int? id = Provider.of<Auth>(context, listen: false).userID;
 
       Provider.of<ScheduleProvider>(
         context,
         listen: false,
       ).getScheduleData(id.toString()).then((_) {
+        _listSchedule = _getScheduleData();
 
+        setState(() {
+          _isLoading = false;
+        });
       });
     }
     _isInit = false;
@@ -37,17 +43,25 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SfCalendar(
-        view: CalendarView.month,
-        dataSource: scheduleDataSource(_getScheduleData()),
-        monthViewSettings: MonthViewSettings(
-            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        showWeekNumber: true,
-        weekNumberStyle: const WeekNumberStyle(
-          backgroundColor: Colors.pink,
-          textStyle: TextStyle(color: Colors.white, fontSize: 15),
-        ),
-      ),
+      body: _isLoading == false
+          ? SfCalendar(
+              view: CalendarView.month,
+              dataSource: scheduleDataSource(_listSchedule),
+              allowedViews: [CalendarView.day, CalendarView.week],
+              controller: _controller,
+              onTap: calendarTapped,
+              monthViewSettings: MonthViewSettings(
+                  appointmentDisplayMode:
+                      MonthAppointmentDisplayMode.appointment),
+              showWeekNumber: true,
+              weekNumberStyle: const WeekNumberStyle(
+                backgroundColor: Colors.pink,
+                textStyle: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(Icons.add),
@@ -61,6 +75,17 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
         }),
       ),
     );
+  }
+
+  void calendarTapped(CalendarTapDetails calendarTapDetails) {
+    if (_controller.view == CalendarView.month &&
+        calendarTapDetails.targetElement == CalendarElement.calendarCell) {
+      _controller.view = CalendarView.day;
+    } else if ((_controller.view == CalendarView.week ||
+            _controller.view == CalendarView.workWeek) &&
+        calendarTapDetails.targetElement == CalendarElement.viewHeader) {
+      _controller.view = CalendarView.day;
+    }
   }
 
   List<Schedule> _getScheduleData() {
@@ -89,7 +114,6 @@ class scheduleDataSource extends CalendarDataSource {
   String getSubject(int index) {
     return _getScheduleData(index).eventName;
   }
-
 
   Schedule _getScheduleData(int index) {
     final dynamic schedule = appointments![index];

@@ -2,9 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/modal/relativeUser.dart';
 import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
+import 'package:fyp_project_testing/provider/userProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddElderlyProfilePage extends StatefulWidget {
   const AddElderlyProfilePage({super.key});
@@ -14,6 +17,33 @@ class AddElderlyProfilePage extends StatefulWidget {
 }
 
 class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
+  String? selected;
+  var _isInit = true;
+  var _isLoading = false;
+  List<RelativeUser> listRelative = [];
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<UserProvider>(context, listen: false)
+          .getAllRelative()
+          .then((_) {
+        listRelative =
+            Provider.of<UserProvider>(context, listen: false).relativeList;
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   final DOBcontroller = TextEditingController();
   final bedNoContoller = TextEditingController();
   final roomNoContoller = TextEditingController();
@@ -21,6 +51,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
   final descContoller = TextEditingController();
   final relativeContoller = TextEditingController();
   String genderSelected = 'Male';
+  String relativeSelected = '';
 
   final _formKey = GlobalKey<FormState>();
 
@@ -51,7 +82,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
               SizedBox(height: 20),
               RoomIDTextField(),
               SizedBox(height: 20),
-              RelativeTextField(),
+              relativeMenu(),
               SizedBox(height: 20),
               DescTextField(),
               SizedBox(height: 20),
@@ -81,7 +112,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                         'bedNo': bedNoContoller.text,
                         'elderlyImage': img64.isEmpty ? null : img64,
                         'descrition': descContoller.text,
-                        'erID': relativeContoller.text,
+                        'erID': relativeSelected,
                       });
                       Map<String, dynamic>? msg =
                           await addElderlyProfile(profileData);
@@ -312,17 +343,16 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
     );
   }
 
-  Widget RelativeTextField() {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Bed Number Cannot be empty...';
-        } else {
-          return null;
-        }
-      },
-      controller: relativeContoller,
-      decoration: InputDecoration(
+  Widget relativeMenu() {
+    return DropdownButtonFormField(
+        validator: (value) {
+          if (value == null) {
+            return 'please select a Relative';
+          } else {
+            return null;
+          }
+        },
+        decoration: InputDecoration(
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.teal,
@@ -335,12 +365,23 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.bed,
+            Icons.face,
             color: Theme.of(context).primaryColor,
           ),
-          labelText: 'Relative',
-          helperText: 'Eldery Raltive Cannot Be Empty'),
-    );
+        ),
+        value: selected,
+        items: listRelative.map((list) {
+          return DropdownMenuItem(
+            child: Text(list.name),
+            value: list.id.toString(),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selected = value.toString();
+            relativeSelected = value.toString();
+          });
+        });
   }
 
   Widget DOBTextField() {
