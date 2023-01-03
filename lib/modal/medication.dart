@@ -8,6 +8,7 @@ class Medication {
   String image;
   int quantity;
   String elderlyID;
+  String name;
   List<MedicationTime>? medicationTime;
 
 
@@ -21,6 +22,7 @@ class Medication {
     required this.image,
     required this.quantity,
     required this.elderlyID,
+    required this.name,
     required this.medicationTime,
   });
 
@@ -48,6 +50,7 @@ class Medication {
       image: json['image'] ?? '',
       quantity: int.parse(json['quantity'].toString()),
       elderlyID: json['elderlyID'].toString(),
+      name: json['name'].toString(),
       medicationTime: medTime,
     );
   }

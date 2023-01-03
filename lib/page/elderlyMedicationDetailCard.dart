@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/modal/medication.dart';
+import 'package:fyp_project_testing/page/medicationDetailPage.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +19,7 @@ class _ElderlyMedicationDetailCardState
   var _isInit = true;
   var _isLoading = false;
 
-  var medicatinobyID = [];
+  List<Medication> medicatinobyID = [];
 
   @override
   void didChangeDependencies() {
@@ -59,12 +61,33 @@ class _ElderlyMedicationDetailCardState
 
   Widget MedicationListView() {
     return ListView.builder(
+         padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: medicatinobyID.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(medicatinobyID[index].medicationName),
+          return Container(
+            margin: EdgeInsets.only(top: 5),
+            child: ListTile(
+              
+              shape: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                borderSide: BorderSide(color: Colors.green, width: 2),
+              ),
+              title: Text(medicatinobyID[index].medicationName),
+              subtitle: Text(medicatinobyID[index].description),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        MedicationDetailPage(widget.id),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+            ),
           );
         });
   }

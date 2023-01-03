@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/medication.dart';
 import 'package:fyp_project_testing/page/addMedicationTiming.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
+import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+
+import '../modal/elderlyMenu.dart';
 
 class EditMedicationPage extends StatefulWidget {
   var id;
@@ -27,14 +30,16 @@ class _EditMedicationPage extends State<EditMedicationPage> {
   final doseController = TextEditingController();
   final quantityController = TextEditingController();
   final elderlyIDController = TextEditingController();
-
+  List<ElderlyMenu> listElderly = [];
+  String? selected;
+  String ElderlySelected = '';
+  var _isInit = true;
+  var _isLoading = false;
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
 
-  var _isInit = true;
-  var _isLoading = false;
-  var loadedMedication;
+  List<Medication> loadedMedication = [];
 
   @override
   void didChangeDependencies() {
@@ -51,8 +56,15 @@ class _EditMedicationPage extends State<EditMedicationPage> {
             Provider.of<MedicationProvider>(context, listen: false)
                 .medicationByID;
 
-        setState(() {
-          _isLoading = false;
+        Provider.of<ProfileProvider>(context, listen: false)
+            .getElderlyMenu()
+            .then((_) {
+          listElderly = Provider.of<ProfileProvider>(context, listen: false)
+              .elderlyMunuList;
+          String ElderlySelected = loadedMedication.first.elderlyID;
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
     }
@@ -101,7 +113,8 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                     QuantityTextField(
                         loadedMedication.first.quantity.toString()),
                     SizedBox(height: 20),
-                    ERTextField(loadedMedication.first.elderlyID),
+                    ElderlyMenuField(loadedMedication.first.elderlyID),
+                    
                     OutlinedButton(
                       child: Text('Submit'),
                       onPressed: () async {
@@ -125,7 +138,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                             'dose': doseController.text,
                             'image': img64.isEmpty ? null : img64,
                             'quantity': quantityController.text,
-                            'elderlyID': elderlyIDController.text,
+                            'elderlyID': ElderlySelected,
                           });
 
                           Map<String, dynamic>? msg =
@@ -475,34 +488,46 @@ class _EditMedicationPage extends State<EditMedicationPage> {
     );
   }
 
-  Widget ERTextField(String erid) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Elderly Cannot be empty...';
-        } else {
-          return null;
-        }
-      },
-      controller: elderlyIDController..text = erid,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.teal,
+  Widget ElderlyMenuField(String relativeID) {
+    String selected = relativeID;
+    return DropdownButtonFormField(
+        validator: (value) {
+          if (value == null) {
+            return 'please select a elderly';
+          } else {
+            return null;
+          }
+        },
+        decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.teal,
+              ),
             ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Theme.of(context).toggleableActiveColor,
-              width: 2,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).toggleableActiveColor,
+                width: 2,
+              ),
             ),
-          ),
-          prefixIcon: Icon(
-            Icons.medical_information,
-            color: Theme.of(context).primaryColor,
-          ),
-          labelText: 'Elderly ID',
-          helperText: 'Elderly ID Cannot Be Empty'),
-    );
+            prefixIcon: Icon(
+              Icons.face,
+              color: Theme.of(context).primaryColor,
+            ),
+            labelText: 'Elderly',
+            helperText: 'Elderly  Cannot Be Empty'),
+        value: selected,
+        items: listElderly.map((list) {
+          return DropdownMenuItem(
+            child: Text(list.elderlyName),
+            value: list.id.toString(),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selected = value.toString();
+            ElderlySelected = value.toString();
+          });
+        });
   }
 }

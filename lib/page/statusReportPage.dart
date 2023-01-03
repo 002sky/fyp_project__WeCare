@@ -44,7 +44,6 @@ class _StatusReportPageState extends State<StatusReportPage> {
               'imcomplete': 0,
               'totalElderly': 0,
             };
-            
           }
           setState(() {
             _isLoading = false;
@@ -56,6 +55,38 @@ class _StatusReportPageState extends State<StatusReportPage> {
     super.didChangeDependencies();
   }
 
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    Provider.of<StatusReportProvider>(context, listen: false)
+        .getReportTotal()
+        .then((_) {
+      totalReport =
+          Provider.of<StatusReportProvider>(context, listen: false).reportTotal;
+
+      Provider.of<StatusReportProvider>(context, listen: false)
+          .getStatusReport()
+          .then((_) {
+        incompleteList =
+            Provider.of<StatusReportProvider>(context, listen: false)
+                .reportStatus;
+
+        if (totalReport.isEmpty) {
+          totalReport = {
+            'currentComplete': 0,
+            'imcomplete': 0,
+            'totalElderly': 0,
+          };
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,120 +96,123 @@ class _StatusReportPageState extends State<StatusReportPage> {
             )
           : Container(
               margin: EdgeInsets.all(10),
-              child: ListView(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Status Report",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Container(
-                          height: 100,
-                          color: Colors.green,
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    totalReport['currentComplete'].toString(),
+              child: RefreshIndicator(
+                onRefresh: _handleRefresh,
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Status Report",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            height: 100,
+                            color: Colors.green,
+                            alignment: Alignment.center,
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      totalReport['currentComplete'].toString(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text('Complete'),
-                            ],
+                                Text('Complete'),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Flexible(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 100,
-                          color: Colors.red,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    totalReport['imcomplete'].toString(),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 100,
+                            color: Colors.red,
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      totalReport['imcomplete'].toString(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text('Incomplete'),
-                            ],
+                                Text('Incomplete'),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Flexible(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 100,
-                          color: Colors.blue,
-                          child: Column(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    totalReport['totalElderly'].toString(),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 100,
+                            color: Colors.blue,
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      totalReport['totalElderly'].toString(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text('Total'),
-                            ],
+                                Text('Total'),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  incompleteList.isEmpty
-                      ? Center(
-                          child: Text(
-                              'The Statue report have be written for this months'),
-                        )
-                      : Center(
-                          child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: incompleteList.length,
-                          itemBuilder: (context, index) {
-                            return StatusReportCard(
-                                incompleteList[index]['name'],
-                                incompleteList[index]['reportStatus']
-                                    .toString(),
-                                incompleteList[index]['id'].toString());
-                          },
-                        ))
-                ],
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    incompleteList.isEmpty
+                        ? Center(
+                            child: Text(
+                                'The Statue report have be written for this months'),
+                          )
+                        : Center(
+                            child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: incompleteList.length,
+                            itemBuilder: (context, index) {
+                              return StatusReportCard(
+                                  incompleteList[index]['name'],
+                                  incompleteList[index]['reportStatus']
+                                      .toString(),
+                                  incompleteList[index]['id'].toString());
+                            },
+                          ))
+                  ],
+                ),
               ),
             ),
     );

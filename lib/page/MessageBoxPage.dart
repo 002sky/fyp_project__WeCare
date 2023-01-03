@@ -52,6 +52,24 @@ class _MessageBoxPageState extends State<MessageBoxPage> {
     super.didChangeDependencies();
   }
 
+  Future<void> _handleRefresh() async {
+      setState(() {
+        _isLoading = true;
+      });
+      senderID = Provider.of<Auth>(context, listen: false).userID!;
+      receiverID = widget.receiver;
+
+      Provider.of<MessageProvider>(context, listen: false)
+          .getAllMessage(senderID, receiverID)
+          .then((_) {
+        _messageList =
+            Provider.of<MessageProvider>(context, listen: false).message;
+        setState(() {
+          _isLoading = false;
+        });
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,63 +79,66 @@ class _MessageBoxPageState extends State<MessageBoxPage> {
         title: Text(widget.name),
       ),
       body: Consumer<MessageProvider>(builder: (context, provider, child) {
-        return Column(
-          children: <Widget>[
-            _isLoading == false
-                ? provider.message != null
-                    ? Flexible(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          itemCount: provider.message!.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Align(
-                                alignment: provider.message![index].senderID ==
-                                        senderID
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.green, width: 2),
-                                    borderRadius: BorderRadius.circular(4.0),
-                                  ),
-                                  child: Text(
-                                    provider.message![index].messageText,
-                                    style: TextStyle(color: Colors.black),
+        return RefreshIndicator(
+           onRefresh: _handleRefresh,
+          child: Column(
+            children: <Widget>[
+              _isLoading == false
+                  ? provider.message != null
+                      ? Flexible(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 20),
+                            itemCount: provider.message!.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Align(
+                                  alignment: provider.message![index].senderID ==
+                                          senderID
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.green, width: 2),
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                    child: Text(
+                                      provider.message![index].messageText,
+                                      style: TextStyle(color: Colors.black),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    : Flexible(
-                        child: Container(),
-                      )
-                : Flexible(child: Center(child: CircularProgressIndicator())),
-            MessageBoxWidget(onSubmitted: (value) async {
-              String data = json.encode({
-                'senderID': senderID,
-                'receiverID': receiverID,
-                'message': value,
-              });
+                              );
+                            },
+                          ),
+                        )
+                      : Flexible(
+                          child: Container(),
+                        )
+                  : Flexible(child: Center(child: CircularProgressIndicator())),
+              MessageBoxWidget(onSubmitted: (value) async {
+                String data = json.encode({
+                  'senderID': senderID,
+                  'receiverID': receiverID,
+                  'message': value,
+                });
 
-              bool success =
-                  await Provider.of<MessageProvider>(context, listen: false)
-                      .sendMessage(data);
+                bool success =
+                    await Provider.of<MessageProvider>(context, listen: false)
+                        .sendMessage(data);
 
-              if (success == true) {
-                Provider.of<MessageProvider>(context, listen: false)
-                    .getAllMessage(senderID, receiverID);
-              }
+                if (success == true) {
+                  Provider.of<MessageProvider>(context, listen: false)
+                      .getAllMessage(senderID, receiverID);
+                }
 
-              print(data);
-            }),
-          ],
+                print(data);
+              }),
+            ],
+          ),
         );
       }),
     );

@@ -82,13 +82,14 @@ class _OverViewPageState extends State<OverViewPage> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(itemTime.time),
+                          child: Text(itemTime.time 
+                          ,style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         DataTable(
                           columns: [
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Age')),
-                            DataColumn(label: Text('Gender')),
+                            DataColumn(label: Text('Elderly')),
+                            DataColumn(label: Text('Medication')),
+                            DataColumn(label: Text('Dose')),
                           ],
                           rows: itemTime.item
                               .map(
@@ -142,6 +143,9 @@ class _OverViewPageState extends State<OverViewPage> {
               },
             ),
           ],
-        ));
+
+        )
+        
+        );
   }
 }

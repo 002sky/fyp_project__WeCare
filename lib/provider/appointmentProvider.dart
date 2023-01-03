@@ -7,11 +7,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
+import '../modal/appointmentOverview.dart';
+
 class AppointmentProvider extends ChangeNotifier {
   List<Appointment> _appointment = [];
+  List<AppointmentOverview> _appointmentOverview = [];
 
   List<Appointment> get appointmentList {
     return [..._appointment];
+  }
+
+  List<AppointmentOverview> get appointmentOverviewList {
+    return [..._appointmentOverview];
   }
 
   getAppointment(int? id) async {
@@ -92,7 +99,6 @@ class AppointmentProvider extends ChangeNotifier {
     return responseMessage;
   }
 
-
   Future<Map<String, dynamic>?> approvalAppointment(String data) async {
     Map<String, dynamic>? responseMessage = {
       'success': false,
@@ -114,7 +120,6 @@ class AppointmentProvider extends ChangeNotifier {
     }
     return responseMessage;
   }
-
 
   Future<Map<String, dynamic>?> disapprovalAppointment(String data) async {
     Map<String, dynamic>? responseMessage = {
@@ -138,4 +143,31 @@ class AppointmentProvider extends ChangeNotifier {
     return responseMessage;
   }
 
+  getAppointmentOverView() async {
+    List<AppointmentOverview> resultList = [];
+    AppointmentOverview result;
+
+    final url = Uri.parse(databaseURL() + 'api/admin/getAppointmentOverview');
+
+    try {
+      final response = await http.get(url, headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        final OverviewMessage = json.decode(response.body);
+
+        for (var detial in OverviewMessage) {
+          for (var item in detial) {
+            result = AppointmentOverview.fromJson(item);
+            resultList.add(result);
+          }
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    _appointmentOverview = resultList;
+    notifyListeners();
+  }
 }

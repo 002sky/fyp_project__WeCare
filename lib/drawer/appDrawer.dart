@@ -3,6 +3,7 @@ import 'package:fyp_project_testing/main.dart';
 import 'package:fyp_project_testing/page/MessageBoxMainPage.dart';
 import 'package:fyp_project_testing/page/addUserAccount.dart';
 import 'package:fyp_project_testing/page/adminAppointment.dart';
+import 'package:fyp_project_testing/page/appointmentOverviewPage.dart';
 import 'package:fyp_project_testing/page/overViewPage.dart';
 
 import 'package:fyp_project_testing/provider/auth.dart';
@@ -71,7 +72,18 @@ class AppDrawer extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (BuildContext context) => AdminAppointment(),
+                            builder: (BuildContext context) =>
+                                AdminAppointment(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      }),
+                      DrawerListTile(Icons.list, 'Appointment Overview', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                AppointmentOverviewPage(),
                             fullscreenDialog: true,
                           ),
                         );

@@ -47,7 +47,7 @@ class _ScheduleMainPageState extends State<ScheduleMainPage> {
           ? SfCalendar(
               view: CalendarView.month,
               dataSource: scheduleDataSource(_listSchedule),
-              allowedViews: [CalendarView.day, CalendarView.week],
+              allowedViews: [CalendarView.day, CalendarView.week,CalendarView.month],
               controller: _controller,
               onTap: calendarTapped,
               monthViewSettings: MonthViewSettings(

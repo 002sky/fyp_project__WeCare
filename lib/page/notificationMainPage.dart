@@ -22,7 +22,6 @@ class NotidificationMainPage extends StatelessWidget {
                   ),
                 ),
               ),
-              NotificationFilter(),
               NotificationList(),
             ],
           )),

@@ -6,47 +6,17 @@ import 'package:provider/provider.dart';
 
 import 'addMedicationPage.dart';
 
-class MedicationMainPage extends StatelessWidget {
-  static const routeName = "/medicationMainPage";
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-      alignment: Alignment.topCenter,
-      margin: EdgeInsets.all(10),
-      child: Column(children: [
-        Row(
-          children: [],
-        ),
-        MedicationList(),
-      ]),
-    ),
-    floatingActionButton: FloatingActionButton(
-       backgroundColor: Theme.of(context).primaryColor,
-        child: Icon(Icons.add),
-        onPressed: (() {
-          Navigator.push(
-              context,
-              MaterialPageRoute<void>(
-                builder: (BuildContext context) => AddMedicationPage(),
-                fullscreenDialog: true,
-              ));
-        }),
-      ),
-    );
-  }
-}
-
-class MedicationList extends StatefulWidget {
-  const MedicationList({super.key});
+class MedicationMainPage extends StatefulWidget {
+  const MedicationMainPage({super.key});
 
   @override
-  State<MedicationList> createState() => _MedicationListState();
+  State<MedicationMainPage> createState() => _MedicationMainPageState();
 }
 
-class _MedicationListState extends State<MedicationList> {
+class _MedicationMainPageState extends State<MedicationMainPage> {
   var _isInit = true;
   var _isLoading = false;
+  List<Medication> medicationData = [];
 
   @override
   void didChangeDependencies() {
@@ -59,6 +29,9 @@ class _MedicationListState extends State<MedicationList> {
         context,
         listen: false,
       ).getMedicationData().then((_) {
+        medicationData =
+            Provider.of<MedicationProvider>(context, listen: false).medication;
+
         setState(() {
           _isLoading = false;
         });
@@ -69,25 +42,78 @@ class _MedicationListState extends State<MedicationList> {
     ;
   }
 
+  Future<void> _handleRefresh() async {
+ 
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<MedicationProvider>(
+        context,
+        listen: false,
+      ).getMedicationData().then((_) {
+        medicationData =
+            Provider.of<MedicationProvider>(context, listen: false).medication;
+
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    
+  }
+
   @override
   Widget build(BuildContext context) {
-    final medicationData =
-        Provider.of<MedicationProvider>(context, listen: false).medication;
-    if (medicationData.isEmpty) {
-      return Container(child: Text('the list is empty'),);
-    } else {
-      return Expanded(child: ListView.builder(
-        itemCount: medicationData.length,
-        itemBuilder: (context, index) {
-        return MedicationCard(
-            medicationData[index].medicationName,
-            medicationData[index].type,
-            medicationData[index].quantity,
-            medicationData[index].description,
-            medicationData[index].expireDate,
-            medicationData[index].id,
-            );
-      }));
-    }
+    return Scaffold(
+      body: _isLoading == false
+          ? RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                children: [
+                  Text(
+                    'Medication',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: medicationData.length,
+                      itemBuilder: (context, index) {
+                        return MedicationCard(
+                          medicationData[index].medicationName,
+                          medicationData[index].type,
+                          medicationData[index].quantity,
+                          medicationData[index].description,
+                          medicationData[index].expireDate,
+                          medicationData[index].id,
+                        );
+                      })
+                ],
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.add),
+        onPressed: (() {
+          Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) => AddMedicationPage(),
+                fullscreenDialog: true,
+              ));
+        }),
+      ),
+    );
   }
 }

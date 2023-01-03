@@ -94,7 +94,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                     ),
                   ],
                 ),
-                ContentDisplay('Elderly ID', loadedMedication.first.elderlyID),
+                ContentDisplay('Elderly ID', loadedMedication.first.elderlyID + " : "+  loadedMedication.first.name),
                 ContentDisplay(
                     'Description', loadedMedication.first.description),
                 Padding(
@@ -118,6 +118,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                         style: TextStyle(color: Colors.white),
                       )),
                 ),
+
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -181,6 +182,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
 
   Widget MedicationTimingList(List<MedicationTime> item) {
     return ListView.builder(
+      physics:  NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: item.length,
         itemBuilder: (context, index) {

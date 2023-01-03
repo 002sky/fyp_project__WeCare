@@ -1,5 +1,6 @@
 class Overview {
   String time;
+  
   List<OverviewItem> item;
 
   Overview({required this.time, required this.item});

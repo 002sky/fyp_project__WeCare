@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/relativeUser.dart';
-import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -140,7 +139,7 @@ class _EditElderlyProfilePageState extends State<EditElderlyProfilePage> {
                               'erID': relativeSelected,
                             });
                             Map<String, dynamic>? msg =
-                                await editProfile(profileData);
+                                await Provider.of<ProfileProvider>(context,listen: false).editProfile(profileData);
 
                             if (msg!.isNotEmpty) {
                               _showErrorDialog(msg['message'],

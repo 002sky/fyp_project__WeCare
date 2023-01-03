@@ -41,7 +41,7 @@ class MedicationCard extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     onPressed: () => {},
-                    child: Text(expireDate.year.toString()),
+                    child: Text(expireDate.year.toString() + "/" +  expireDate.month.toString()+ "/" +  expireDate.day.toString()),
                     style: ButtonStyle(
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(0)))),

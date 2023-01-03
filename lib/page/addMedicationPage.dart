@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:fyp_project_testing/page/addMedicationTiming.dart';
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
+import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+
+import '../modal/elderlyMenu.dart';
 
 class AddMedicationPage extends StatefulWidget {
   const AddMedicationPage({super.key});
@@ -23,10 +27,36 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
   final doseController = TextEditingController();
   final quantityController = TextEditingController();
   final elderlyIDController = TextEditingController();
-
+  List<ElderlyMenu> listElderly = [];
   List<XFile>? _imageFile;
   final ImagePicker _picker = ImagePicker();
   final _formKey = GlobalKey<FormState>();
+  String? selected;
+  String ElderlySelected = '';
+
+  var _isInit = true;
+  var _isLoading = false;
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Provider.of<ProfileProvider>(context, listen: false)
+          .getElderlyMenu()
+          .then((_) {
+        listElderly = Provider.of<ProfileProvider>(context, listen: false)
+            .elderlyMunuList;
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,66 +67,71 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
       ),
       body: Form(
         key: _formKey,
-        child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            children: <Widget>[
-              imageMedication(),
-              SizedBox(height: 20),
-              MedicationNameTextField(),
-              SizedBox(height: 20),
-              MedicationTypeTextField(),
-              SizedBox(height: 20),
-              MedicationDescTextField(),
-              SizedBox(height: 20),
-              ManufactureTextField(),
-              SizedBox(height: 20),
-              ExpireDateTextField(),
-              SizedBox(height: 20),
-              QuantityTextField(),
-              SizedBox(height: 20),
-              ERTextField(),
-              OutlinedButton(
-                child: Text('Submit'),
-                onPressed: () async {
-                  //cover the image into base64 and bytes to store into database
-                  String img64;
-                  if (_imageFile == null) {
-                    img64 = '';
-                  } else {
-                    final bytes =
-                        await File(_imageFile!.first.path).readAsBytes();
-                    img64 = base64Encode(bytes);
-                  }
+        child: _isLoading == false
+            ? ListView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                children: <Widget>[
+                    imageMedication(),
+                    SizedBox(height: 20),
+                    MedicationNameTextField(),
+                    SizedBox(height: 20),
+                    MedicationTypeTextField(),
+                    SizedBox(height: 20),
+                    MedicationDescTextField(),
+                    SizedBox(height: 20),
+                    ManufactureTextField(),
+                    SizedBox(height: 20),
+                    ExpireDateTextField(),
+                    SizedBox(height: 20),
+                    QuantityTextField(),
+                    SizedBox(height: 20),
+                    ElderlyMenuField(),
+                    OutlinedButton(
+                      child: Text('Submit'),
+                      onPressed: () async {
+                        //cover the image into base64 and bytes to store into database
+                        String img64;
+                        if (_imageFile == null) {
+                          img64 = '';
+                        } else {
+                          final bytes =
+                              await File(_imageFile!.first.path).readAsBytes();
+                          img64 = base64Encode(bytes);
+                        }
 
-                  if (_formKey.currentState!.validate()) {
-                    String data = json.encode({
-                      'medicationName': medicationNameController.text,
-                      'type': medicationTypeController.text,
-                      'description': medicationDescriptionController.text,
-                      'expireDate': expireDateController.text,
-                      'dose': doseController.text,
-                      'image': img64.isEmpty ? null : img64,
-                      'quantity': quantityController.text,
-                      'elderlyID': elderlyIDController.text,
-                    });
+                        if (_formKey.currentState!.validate()) {
+                          String data = json.encode({
+                            'medicationName': medicationNameController.text,
+                            'type': medicationTypeController.text,
+                            'description': medicationDescriptionController.text,
+                            'expireDate': expireDateController.text,
+                            'dose': doseController.text,
+                            'image': img64.isEmpty ? null : img64,
+                            'quantity': quantityController.text,
+                            'elderlyID': ElderlySelected,
+                          });
 
-                    print(data);
+                          print(data);
 
-                    Map<String, dynamic>? msg =
-                        await Provider.of<MedicationProvider>(context,
-                                listen: false)
-                            .setMedication(data);
+                          Map<String, dynamic>? msg =
+                              await Provider.of<MedicationProvider>(context,
+                                      listen: false)
+                                  .setMedication(data);
 
-                    if (msg!.isNotEmpty) {
-                      _showErrorDialog(
-                          msg['message'],
-                          msg['success'] != true ? 'Error' : 'Message',
-                          msg['ID'].toString());
-                    }
-                  }
-                },
+                          if (msg!.isNotEmpty) {
+                            _showErrorDialog(
+                                msg['message'],
+                                msg['success'] != true ? 'Error' : 'Message',
+                                msg['ID'].toString());
+                          }
+                        }
+                      },
+                    ),
+                  ])
+            : Center(
+                child: CircularProgressIndicator(),
               ),
-            ]),
       ),
     );
   }
@@ -430,7 +465,7 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
     return TextFormField(
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Elderly Cannot be empty...';
+          return 'Elderly Relative Cannot be empty...';
         } else {
           return null;
         }
@@ -455,5 +490,47 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
           labelText: 'Elderly ID',
           helperText: 'Elderly ID Cannot Be Empty'),
     );
+  }
+
+  Widget ElderlyMenuField() {
+    return DropdownButtonFormField(
+        validator: (value) {
+          if (value == null) {
+            return 'please select a elderly';
+          } else {
+            return null;
+          }
+        },
+        decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.teal,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Theme.of(context).toggleableActiveColor,
+                width: 2,
+              ),
+            ),
+            prefixIcon: Icon(
+              Icons.face,
+              color: Theme.of(context).primaryColor,
+            ),
+            labelText: 'Elderly',
+            helperText: 'Elderly  Cannot Be Empty'),
+        value: selected,
+        items: listElderly.map((list) {
+          return DropdownMenuItem(
+            child: Text(list.elderlyName),
+            value: list.id.toString(),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selected = value.toString();
+            ElderlySelected = value.toString();
+          });
+        });
   }
 }

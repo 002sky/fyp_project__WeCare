@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/modal/relativeUser.dart';
-import 'package:fyp_project_testing/provider/ElderlyProfile.dart';
+import 'package:fyp_project_testing/provider/profileProvider.dart';
 import 'package:fyp_project_testing/provider/userProvider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -115,7 +115,9 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
                         'erID': relativeSelected,
                       });
                       Map<String, dynamic>? msg =
-                          await addElderlyProfile(profileData);
+                          await Provider.of<ProfileProvider>(context,
+                                  listen: false)
+                              .addElderlyProfile(profileData);
 
                       if (msg!.isNotEmpty) {
                         _showErrorDialog(msg['message'].toString(),
@@ -380,6 +382,7 @@ class _AddElderlyProfilePageState extends State<AddElderlyProfilePage> {
           setState(() {
             selected = value.toString();
             relativeSelected = value.toString();
+            
           });
         });
   }
