@@ -82,7 +82,7 @@ class _ElderlyMedicationDetailCardState
                   context,
                   MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        MedicationDetailPage(widget.id),
+                        MedicationDetailPage(medicatinobyID[index].id),
                     fullscreenDialog: true,
                   ),
                 );

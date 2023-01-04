@@ -80,8 +80,6 @@ class ProfileProvider extends ChangeNotifier {
       _elderlyMenu = resultList;
       notifyListeners();
     } catch (e) {}
-
-    
   }
 
   Future<List<ProfileDetail>> fetchProfileDetail() async {
@@ -129,7 +127,6 @@ class ProfileProvider extends ChangeNotifier {
           result = ProfileDetail.fromJson(i);
           resultProfile.add(result);
         }
-
       } else {
         print('error');
       }
@@ -155,7 +152,11 @@ class ProfileProvider extends ChangeNotifier {
         },
       );
       // final responseData = json.decode(response.body);
-      responseMessage = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        responseMessage = jsonDecode(response.body);
+        return responseMessage;
+      }
     } catch (e) {
       print(e);
       return responseMessage;

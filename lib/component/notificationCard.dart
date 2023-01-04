@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project_testing/page/scheduleDetailView.dart';
-import 'package:intl/intl.dart';
 
 class NotificationCard extends StatelessWidget {
   final String taskName;

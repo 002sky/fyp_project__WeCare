@@ -142,7 +142,7 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(id),
+          title: Text(title),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[

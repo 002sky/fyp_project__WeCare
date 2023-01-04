@@ -4,56 +4,21 @@ import 'package:fyp_project_testing/component/notificationCard.dart';
 import 'package:fyp_project_testing/provider/notificationProvider.dart';
 import 'package:provider/provider.dart';
 
-class NotidificationMainPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          margin: EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Notification',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              NotificationList(),
-            ],
-          )),
-    );
-  }
-}
+import '../modal/notificationDaily.dart';
 
-class NotificationList extends StatefulWidget {
-  const NotificationList({super.key});
+
+class NotidificationMainPage extends StatefulWidget {
+  const NotidificationMainPage({super.key});
 
   @override
-  State<NotificationList> createState() => _NotificationListState();
+  State<NotidificationMainPage> createState() => _NotidificationMainPageState();
 }
 
-class _NotificationListState extends State<NotificationList> {
+class _NotidificationMainPageState extends State<NotidificationMainPage> {
+
   var _isInit = true;
   var _isLoading = false;
-  late final notificaitonData;
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    notificaitonData =
-        Provider.of<notificationProvider>(context, listen: false).notification;
-    print(notificaitonData);
-    super.initState();
-  }
+  List<notificationDaily>   notificaitonData = [];
 
   @override
   void didChangeDependencies() {
@@ -65,6 +30,9 @@ class _NotificationListState extends State<NotificationList> {
         context,
         listen: false,
       ).getNotificationList().then((_) {
+
+            notificaitonData =
+        Provider.of<notificationProvider>(context, listen: false).notification;
         setState(() {
           _isLoading = false;
         });
@@ -75,26 +43,66 @@ class _NotificationListState extends State<NotificationList> {
     ;
   }
 
+  
+  Future<void> _handleRefresh() async {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<notificationProvider>(
+        context,
+        listen: false,
+      ).getNotificationList().then((_) {
+
+            notificaitonData =
+        Provider.of<notificationProvider>(context, listen: false).notification;
+        setState(() {
+          _isLoading = false;
+        });
+      });
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return _isLoading == true
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Expanded(
-            child: ListView.builder(
-              itemCount: notificaitonData.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                    padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-                    child: NotificationCard(
-                      notificaitonData[index].taskName,
-                      notificaitonData[index].time,
-                    ));
-              },
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: ListView(
+                     padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          children: [
+            Text(
+              'Notification',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
             ),
-          );
+            
+            _isLoading == true
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Expanded(
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: notificaitonData.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+                      child: NotificationCard(
+                        notificaitonData[index].taskName,
+                        notificaitonData[index].time,
+                      ));
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
-
-  
 }
+
+
+

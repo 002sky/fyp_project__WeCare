@@ -7,8 +7,11 @@ import 'package:fyp_project_testing/modal/schedule.dart';
 import 'dart:core';
 import 'package:http/http.dart' as http;
 
-Future<bool> addScheduleData(String data) async {
-  bool message = false;
+Future<Map<String, dynamic>?> addScheduleData(String data) async {
+  Map<String, dynamic>? responseMessage = {
+    'success': false,
+    'message': 'Something went wrong'
+  };
   final url = Uri.parse(databaseURL() + 'api/admin/addSchedule');
   try {
     final response = await http.post(url, body: data, headers: {
@@ -18,19 +21,20 @@ Future<bool> addScheduleData(String data) async {
       final scheduleMessage = json.decode(response.body);
 
       final successMessgage = scheduleMessage['success'];
-      print(successMessgage);
+
       if (successMessgage.toString() == 'true') {
-        message = true;
+        responseMessage = {'success': true, 'message': 'Susseffully Added'};
+
+        return responseMessage;
       } else {
-        message = false;
+        return responseMessage;
       }
     }
   } catch (e) {
     print(e);
   }
 
-  print(message);
-  return message;
+  return responseMessage;
 }
 
 Future<List<Schedule>> fetchScheduleData(String id) async {
@@ -39,18 +43,20 @@ Future<List<Schedule>> fetchScheduleData(String id) async {
 
   final url = Uri.parse(databaseURL() + 'api/admin/getSchduleData');
   try {
-    final response = await http.post(url, body: json.encode({
-      'userID': id,
-    }), headers: {
-      HttpHeaders.contentTypeHeader: "application/json",
-    });
+    final response = await http.post(url,
+        body: json.encode({
+          'userID': id,
+        }),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        });
     final data = json.decode(response.body);
-          for (var detail in data) {
-        for (var item in detail) {
-          result = Schedule.fromJson(item);
-          resultList.add(result);
-        }
+    for (var detail in data) {
+      for (var item in detail) {
+        result = Schedule.fromJson(item);
+        resultList.add(result);
       }
+    }
   } catch (e) {
     print(e);
   }

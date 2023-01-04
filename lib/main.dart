@@ -86,7 +86,9 @@ class MyApp extends StatelessWidget {
                           ? CircularProgressIndicator()
                           : AuthPage(),
                 ),
-          routes: {},
+          routes: {
+          
+          },
         ),
       ),
     );

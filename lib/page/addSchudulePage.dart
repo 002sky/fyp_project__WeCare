@@ -14,8 +14,8 @@ class AddSchdeulePage extends StatefulWidget {
 
 class _AddSchdeulePage extends State<AddSchdeulePage> {
   TextEditingController tileController = new TextEditingController();
-  late DateTime startTime;
-  late DateTime endTime;
+  DateTime? startTime;
+  DateTime? endTime;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
               FormBuilderDateTimePicker(
                 name: 'StartTime',
                 onChanged: (val) {
-                  startTime = val!;
+                  startTime = val;
                 },
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -104,7 +104,7 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
               SizedBox(height: 10),
               Expanded(
                 child: OutlinedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       String data = json.encode({
                         'eventName': tileController.text,
                         'start_time': startTime.toString(),
@@ -113,7 +113,12 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
                             Provider.of<Auth>(context, listen: false).userID,
                         'color_display': 'green'
                       });
-                      addScheduleData(data);
+                      Map<String, dynamic>? msg = await addScheduleData(data);
+
+                      if (msg!.isNotEmpty) {
+                        _showErrorDialog(msg['message'].toString(),
+                            msg['success'] != true ? 'Error' : 'Message');
+                      }
                     },
                     child: Text('Save')),
               ),
@@ -121,6 +126,36 @@ class _AddSchdeulePage extends State<AddSchdeulePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showErrorDialog(String msg, String title) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  if (title == 'Error') {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  }
+                },
+                child: Text('Confirm'))
+          ],
+        );
+      },
     );
   }
 }

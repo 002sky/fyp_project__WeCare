@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fyp_project_testing/modal/medication.dart';
 
 import 'package:fyp_project_testing/provider/medicationProvider.dart';
 import 'package:fyp_project_testing/provider/medicationTimingProvider.dart';
@@ -19,7 +20,7 @@ class AddMedicationTiming extends StatefulWidget {
 class _AddMedicationTimingState extends State<AddMedicationTiming> {
   var _isInit = true;
   var _isLoading = false;
-  var loadedMedication;
+  List<Medication> loadedMedication = [];
   @override
   void didChangeDependencies() {
     if (_isInit) {
@@ -61,8 +62,8 @@ class _AddMedicationTimingState extends State<AddMedicationTiming> {
             : ListView(
                 children: <Widget>[
                   ContentDisplay(
-                      'Medication Name', loadedMedication.first.medicationName),
-                  ContentDisplay('Medication Name', loadedMedication.first.id),
+                      'Elderly Name', loadedMedication.first.name),
+                  ContentDisplay('Medication Name', loadedMedication.first.medicationName),
                   DynamicAddForm(widget.id),
                 ],
               ));

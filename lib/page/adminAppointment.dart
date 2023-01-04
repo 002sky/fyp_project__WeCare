@@ -119,7 +119,7 @@ class _AdminAppointmentState extends State<AdminAppointment> {
                   ),
                 );
               })
-          : CircularProgressIndicator(),
+          : Center(child: CircularProgressIndicator()),
     );
   }
 

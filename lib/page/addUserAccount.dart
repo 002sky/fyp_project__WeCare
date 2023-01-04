@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fyp_project_testing/page/mainPage.dart';
@@ -164,10 +165,12 @@ class _AddUserAccountState extends State<AddUserAccount> {
   Widget EmailTextField() {
     return TextFormField(
       validator: (value) {
-        if (value!.isEmpty) {
-          return 'Email Cannot be empty...';
-        } else {
+        if (EmailValidator.validate(value!)) {
           return null;
+        } else if (value.isEmpty) {
+          return 'Pleasea enter a email address';
+        } else {
+          return 'please enter a valid email addree';
         }
       },
       controller: emailController,
@@ -184,7 +187,7 @@ class _AddUserAccountState extends State<AddUserAccount> {
             ),
           ),
           prefixIcon: Icon(
-            Icons.house,
+            Icons.email,
             color: Theme.of(context).primaryColor,
           ),
           labelText: 'Email',
