@@ -108,38 +108,6 @@ class _OverViewPageState extends State<OverViewPage> {
                   );
                 }
                 return Container();
-                // return Card(
-                //   elevation: 4.0,
-                //   shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(10.0)),
-                //   child: Column(
-                //     children: <Widget>[
-                //       Padding(
-                //         padding: EdgeInsets.all(8.0),
-                //         child: Text(listOfOverview[index1].time),
-                //       ),
-                //       DataTable(
-                //         columns: [
-                //           DataColumn(label: Text('Name')),
-                //           DataColumn(label: Text('Age')),
-                //           DataColumn(label: Text('Gender')),
-                //         ],
-                //         rows: listOfOverview[index1]
-                //             .item
-                //             .map(
-                //               (detail) => DataRow(
-                //                 cells: [
-                //                   DataCell(Text(detail.eName)),
-                //                   DataCell(Text(detail.MedicationName)),
-                //                   DataCell(Text(detail.Dose)),
-                //                 ],
-                //               ),
-                //             )
-                //             .toList(),
-                //       ),
-                //     ],
-                //   ),
-                // );
               },
             ),
           ],
