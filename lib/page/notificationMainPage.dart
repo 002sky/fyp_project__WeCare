@@ -82,21 +82,19 @@ class _NotidificationMainPageState extends State<NotidificationMainPage> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Expanded(
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: notificaitonData.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                      padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
-                      child: NotificationCard(
-                        notificaitonData[index].taskName,
-                        notificaitonData[index].time,
-                      ));
-                },
-              ),
-            )
+          : ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: notificaitonData.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                  padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+                  child: NotificationCard(
+                    notificaitonData[index].taskName,
+                    notificaitonData[index].time,
+                  ));
+            },
+          )
           ],
         ),
       ),

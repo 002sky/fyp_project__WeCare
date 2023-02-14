@@ -45,7 +45,7 @@ class _AddElderlyStatusReportPageState
                       if (_formKey.currentState!.validate()) {
                         String data = jsonEncode({
                           'elderlyID': widget.elderlyID,
-                          'report' : statusReportController.text,
+                          'report': statusReportController.text,
                         });
 
                         Map<String, dynamic>? msg =
@@ -61,7 +61,9 @@ class _AddElderlyStatusReportPageState
                     },
                     child: Text('Save')),
               ],
-            )));
+            )
+            )
+            );
   }
 
   Future<void> _showErrorDialog(String msg, String title) {

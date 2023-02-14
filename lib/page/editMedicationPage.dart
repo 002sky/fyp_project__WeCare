@@ -61,7 +61,7 @@ class _EditMedicationPage extends State<EditMedicationPage> {
             .then((_) {
           listElderly = Provider.of<ProfileProvider>(context, listen: false)
               .elderlyMunuList;
-          String ElderlySelected = loadedMedication.first.elderlyID;
+           ElderlySelected = loadedMedication.first.elderlyID;
           setState(() {
             _isLoading = false;
           });
