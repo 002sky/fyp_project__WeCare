@@ -118,7 +118,7 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Medications Timeing:'),
+              Text('Medications Timing:'),
               IconButton(
                   onPressed: () {
                     _addInputField(context);
@@ -151,28 +151,37 @@ class _DynamicAddFormState extends State<DynamicAddForm> {
             itemBuilder: (context, index) {
               return _generating.elementAt(index);
             }),
-        OutlinedButton(
-            onPressed: () async {
-              gettingValue();
-              if (_value.isNotEmpty) {
-                String data = json.encode({
-                  'medicationID': widget.id,
-                  'time_status': _value,
-                });
-                Map<String, dynamic>? msg =
-                    await Provider.of<MedicationTimingProvder>(context,
-                            listen: false)
-                        .setMedicationTiming(data);
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(backgroundColor: Colors.blue),
+                  onPressed: () async {
+                    gettingValue();
+                    if (_value.isNotEmpty) {
+                      String data = json.encode({
+                        'medicationID': widget.id,
+                        'time_status': _value,
+                      });
+                      Map<String, dynamic>? msg =
+                          await Provider.of<MedicationTimingProvder>(context,
+                                  listen: false)
+                              .setMedicationTiming(data);
 
-                if (msg!.isNotEmpty) {
-                  _showErrorDialog(msg['message'].toString(),
-                      msg['success'] != true ? 'Error' : 'Message');
-                }
-              } else {}
+                      if (msg!.isNotEmpty) {
+                        _showErrorDialog(msg['message'].toString(),
+                            msg['success'] != true ? 'Error' : 'Message');
+                      }
+                    } else {}
 
-              _value.clear();
-            },
-            child: Text('Save'))
+                    _value.clear();
+                  },
+                  child: Text('Save', style: TextStyle(color: Colors.white),)),
+            ),
+          ],
+        )
       ],
     );
   }

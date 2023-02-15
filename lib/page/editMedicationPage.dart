@@ -114,9 +114,9 @@ class _EditMedicationPage extends State<EditMedicationPage> {
                         loadedMedication.first.quantity.toString()),
                     SizedBox(height: 20),
                     ElderlyMenuField(loadedMedication.first.elderlyID),
-                    
                     OutlinedButton(
-                      child: Text('Submit'),
+                      style: OutlinedButton.styleFrom(backgroundColor: Colors.blue),
+                      child: Text('Submit',style: TextStyle(color: Colors.white),),
                       onPressed: () async {
                         //cover the image into base64 and bytes to store into database
                         String img64;

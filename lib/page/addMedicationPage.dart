@@ -88,7 +88,8 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
                     SizedBox(height: 20),
                     ElderlyMenuField(),
                     OutlinedButton(
-                      child: Text('Submit'),
+                      style: OutlinedButton.styleFrom(backgroundColor: Colors.blue),
+                      child: Text('Submit', style: TextStyle(color: Colors.white),),
                       onPressed: () async {
                         //cover the image into base64 and bytes to store into database
                         String img64;
@@ -111,8 +112,6 @@ class _AddMedicationPageState extends State<AddMedicationPage> {
                             'quantity': quantityController.text,
                             'elderlyID': ElderlySelected,
                           });
-
-                          print(data);
 
                           Map<String, dynamic>? msg =
                               await Provider.of<MedicationProvider>(context,
